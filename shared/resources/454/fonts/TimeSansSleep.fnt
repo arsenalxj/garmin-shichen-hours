@@ -1,0 +1,15 @@
+info face="ShichenTimeSansSleep" size=62 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=0,0
+common lineHeight=48 base=47 scaleW=256 scaleH=98 pages=1 packed=0
+page id=0 file="TimeSansSleep.png"
+chars count=11
+char id=48 x=0 y=0 width=34 height=48 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=49 x=35 y=0 width=34 height=46 xoffset=0 yoffset=1 xadvance=35 page=0 chnl=15
+char id=50 x=70 y=0 width=34 height=47 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=51 x=105 y=0 width=34 height=48 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=52 x=140 y=0 width=34 height=47 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=53 x=175 y=0 width=34 height=47 xoffset=0 yoffset=1 xadvance=35 page=0 chnl=15
+char id=54 x=210 y=0 width=34 height=48 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=55 x=0 y=49 width=34 height=46 xoffset=0 yoffset=1 xadvance=35 page=0 chnl=15
+char id=56 x=35 y=49 width=34 height=48 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=57 x=70 y=49 width=34 height=48 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=58 x=105 y=49 width=18 height=34 xoffset=0 yoffset=14 xadvance=19 page=0 chnl=15

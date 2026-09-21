@@ -1,0 +1,9 @@
+字体原始文件内的版权声明（来自 WOFF2 name 表）：
+
+Noto Sans SC:
+(c) 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
+
+Noto Serif SC:
+(c) 2017-2024 Adobe (http://www.adobe.com/).
+
+上述字体与其 Shichen 位图衍生字体遵循随附的 SIL Open Font License 1.1。

@@ -1,0 +1,10 @@
+.DS_Store
+.tools/
+build/
+.agents/
+__pycache__/
+*.pyc
+*.prg
+*.prg.debug.xml
+*.iq
+*.der

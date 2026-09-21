@@ -1,0 +1,23 @@
+{
+  "hour-white": {
+    "name": "十二时辰·宣纸留白", "prototype": "paper", "id": "514d17270b4a4bb9aeb4f2bd2b38085b",
+    "serif": true, "cycle": false, "rimOn": true,
+    "face": "F8F3E6", "segment": "E2E1E4", "segmentText": "3B3A3E", "current": "D92121", "currentText": "F8F4ED",
+    "time": "1D1B1C", "date": "3B3A3E", "meta": "867E76", "rim": "3B3A3E",
+    "aodFace": "F8F3E6", "aodTime": "1D1B1C", "aodDate": "3B3A3E", "aodMeta": "867E76", "dim": 1.0
+  },
+  "hour-black": {
+    "name": "十二时辰·玄天黑金", "prototype": "night", "id": "d8b220efbf78446f95c06033fc4f287f",
+    "serif": false, "cycle": false, "rimOn": true,
+    "face": "0E100F", "segment": "2C2C2C", "segmentText": "9C8B4D", "current": "D4AF37", "currentText": "0E100F",
+    "time": "EEF7F2", "date": "D4AF37", "meta": "9FA39A", "rim": "9C8B4D",
+    "aodFace": "0E100F", "aodTime": "EEF7F2", "aodDate": "D4AF37", "aodMeta": "9FA39A", "dim": 0.55
+  },
+  "hour-color": {
+    "name": "十二时辰·十二时辰色", "prototype": "cycle", "id": "2b3a4faf2eb34791a8136b8b3ca1d8a4",
+    "serif": false, "cycle": true, "rimOn": false,
+    "face": "F2F3F4", "segment": "000000", "segmentText": "000000", "current": "000000", "currentText": "000000",
+    "time": "1D1B1C", "date": "867E76", "meta": "867E76", "rim": "E4DFD7",
+    "aodFace": "0E100F", "aodTime": "EEF7F2", "aodDate": "9FA39A", "aodMeta": "9FA39A", "dim": 0.55
+  }
+}

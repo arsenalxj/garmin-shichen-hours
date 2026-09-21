@@ -1,0 +1,10 @@
+<resources>
+  <font id="Ring" filename="../../../shared/resources/260/fonts/Ring.fnt" antialias="false"/>
+  <font id="RingActive" filename="../../../shared/resources/260/fonts/RingActive.fnt" antialias="false"/>
+  <font id="Caption" filename="../../../shared/resources/260/fonts/Caption.fnt" antialias="false"/>
+  <font id="Date" filename="../../../shared/resources/260/fonts/Date.fnt" antialias="false"/>
+  <font id="Time" filename="../../../shared/resources/260/fonts/TimeSans.fnt" antialias="false"/>
+  <font id="TimeSleep" filename="../../../shared/resources/260/fonts/TimeSansSleep.fnt" antialias="false"/>
+  <font id="Metric" filename="../../../shared/resources/260/fonts/Metric.fnt" antialias="false"/>
+  <font id="Period" filename="../../../shared/resources/260/fonts/Period.fnt" antialias="false"/>
+</resources>

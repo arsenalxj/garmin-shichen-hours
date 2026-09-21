@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>十二时辰表盘 · 三版视觉方向对照</title>
+<style>
+  /* 开源字体（OFL）：思源宋体/思源黑体可变字重子集，自包含于 fonts/ */
+  @font-face {
+    font-family: 'Noto Serif SC';
+    src: url('fonts/NotoSerifSC-var.woff2') format('woff2');
+    font-weight: 100 900; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Noto Sans SC';
+    src: url('fonts/NotoSansSC-var.woff2') format('woff2');
+    font-weight: 100 900; font-display: swap;
+  }
+  :root {
+    /* 页面底色取自传统色库 */
+    --paper: #F8F4ED;      /* 汉白玉 */
+    --panel: #F8F3E6;      /* 绫素白 */
+    --ink: #1D1B1C;        /* 墨色 */
+    --ink-soft: #3B3A3E;   /* 松烟墨 */
+    --muted: #867E76;      /* 瓦灰 */
+    --line: #E4DFD7;       /* 珍珠灰 */
+    --accent: #D92121;     /* 朱砂红 */
+    --gold: #D4AF37;       /* 鎏金 */
+    --font-title: "Noto Serif SC", serif;
+    --font-body: "Noto Sans SC", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  header {
+    padding: 40px 48px 24px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  }
+  h1 { font-family: var(--font-title); font-weight: 900; font-size: 34px; letter-spacing: 0.04em; }
+  h1 .zhu { color: var(--accent); }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .src { font-size: 12px; color: var(--muted); text-align: right; }
+  .src b { color: var(--ink-soft); font-weight: 600; }
+
+  /* ── 控制条 ── */
+  .controls {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 48px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px;
+  }
+  .ctl { display: flex; align-items: center; gap: 8px; }
+  .ctl label { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; white-space: nowrap; }
+  .ctl input[type="time"], .ctl input[type="number"], .ctl select {
+    font-family: var(--font-body); font-size: 14px; color: var(--ink);
+    background: #fff; border: 1px solid var(--line); padding: 6px 10px;
+  }
+  .ctl input[type="range"] { width: 110px; accent-color: var(--accent); }
+  .btn {
+    font-family: var(--font-body); font-size: 12px; cursor: pointer;
+    border: 1px solid var(--ink-soft); background: transparent; color: var(--ink-soft);
+    padding: 6px 12px; letter-spacing: 0.05em;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn.on { background: var(--ink); color: var(--paper); }
+  .quick { display: flex; gap: 6px; }
+  .val { font-size: 13px; font-variant-numeric: tabular-nums; min-width: 44px; }
+  .chk { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+  .chk input { accent-color: var(--accent); }
+
+  /* ── 三版卡片 ── */
+  main { padding: 36px 48px 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px; }
+  .card { background: var(--panel); border: 1px solid var(--line); display: flex; flex-direction: column; }
+  .card-head { padding: 18px 20px 0; }
+  .card-head h2 { font-family: var(--font-title); font-size: 21px; font-weight: 700; }
+  .card-head h2 .no { color: var(--accent); margin-right: 8px; font-size: 14px; vertical-align: 3px; }
+  .card-head p { font-size: 12.5px; color: var(--muted); margin-top: 4px; min-height: 40px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 20px 0; }
+  .chip { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink-soft); }
+  .chip i { width: 12px; height: 12px; display: inline-block; border: 1px solid rgba(0,0,0,0.12); }
+  .stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 16px 8px; gap: 24px; flex-wrap: wrap; }
+  .face-box { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .face-box .px { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }
+  .face-box svg { display: block; }
+  .card-foot { padding: 10px 20px 18px; display: flex; justify-content: space-between; align-items: center; }
+  .card-foot .note { font-size: 11px; color: var(--muted); }
+
+  /* ── 时辰配色表 ── */
+  .legend { padding: 0 48px 56px; }
+  .legend h3 { font-family: var(--font-title); font-size: 19px; margin: 28px 0 4px; }
+  .legend .tip { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+  .hours { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  .hour { border: 1px solid var(--line); background: var(--panel); padding: 10px 12px; display: flex; gap: 10px; align-items: center; }
+  .hour.cur { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .hour i { width: 30px; height: 30px; flex: none; border: 1px solid rgba(0,0,0,0.15); }
+  .hour .zi { font-family: var(--font-title); font-size: 17px; font-weight: 700; }
+  .hour .cname { font-size: 12px; color: var(--ink-soft); }
+  .hour .hex { font-size: 10.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .hour .range { font-size: 10.5px; color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; }
+
+  footer { padding: 20px 48px 40px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+  @media (max-width: 720px) { header, .controls, main, .legend, footer { padding-left: 18px; padding-right: 18px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>十二时辰表盘 <span class="zhu">·</span> 三版视觉方向</h1>
+    <div class="sub">圆屏佳明表盘原型 · 平面色块 · 覆盖 218–466px · AMOLED / MIP</div>
+  </div>
+  <div class="src">
+    配色全部「点名」自 <b>zhongguo-traditional-colors</b> 742 色库<br>
+    十二时辰各对应一个真实传统色，未做算法兜底
+  </div>
+</header>
+
+<div class="controls" id="controls">
+  <div class="ctl">
+    <label>时间</label>
+    <input type="time" id="timeInput" value="23:05">
+    <button class="btn" id="nowBtn">现在</button>
+  </div>
+  <div class="ctl quick">
+    <label>验收时点</label>
+    <button class="btn qt" data-t="22:59">22:59</button>
+    <button class="btn qt" data-t="23:00">23:00</button>
+    <button class="btn qt" data-t="00:59">00:59</button>
+    <button class="btn qt" data-t="01:00">01:00</button>
+  </div>
+  <div class="ctl">
+    <label>主尺寸</label>
+    <select id="sizeSel">
+      <option>218</option><option>240</option><option>260</option>
+      <option>280</option><option>360</option><option>390</option><option>416</option>
+      <option selected>454</option><option>466</option>
+    </select>
+    <label class="chk"><input type="checkbox" id="duoChk" checked> 同时看 218px</label>
+  </div>
+  <div class="ctl">
+    <label>电量</label>
+    <input type="range" id="battRange" min="0" max="100" value="62">
+    <span class="val" id="battVal">62%</span>
+  </div>
+  <div class="ctl">
+    <label>心跳</label>
+    <input type="number" id="hrInput" min="0" max="250" value="72" step="1" style="width:64px">
+  </div>
+  <div class="ctl">
+    <label>步数</label>
+    <input type="number" id="stepsInput" min="0" max="999999" value="8432" step="100" style="width:88px">
+  </div>
+  <div class="ctl">
+    <label class="chk"><input type="checkbox" id="h12Chk"> 12 小时制</label>
+    <label class="chk"><input type="checkbox" id="aodChk"> 常亮省电</label>
+    <label class="chk"><input type="checkbox" id="mipChk"> MIP 64 色模拟</label>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+</main>
+
+<section class="legend">
+  <h3>十二时辰 × 中国传统色</h3>
+  <p class="tip">每个时辰对应色库中一个真实命名色，环带按「夜半 → 平旦 → 日出 → 日中 → 日入 → 黄昏 → 人定」的天光顺序取色。当前时辰高亮显示。</p>
+  <div class="hours" id="hours"></div>
+</section>
+
+<footer>
+  验收要点：十二分区顺时针「子丑寅卯辰巳午未申酉戌亥」、文字均正向、当前分区唯一且向内延伸 ≈6% 半径、22:59→23:00 与 00:59→01:00 时辰切换正确、各时辰文字与中央信息不碰撞。兼容范围不含 Forerunner 45、55、Garmin Swim 2 三款 8 色机型；要求烧屏保护的机型省电时息屏。配色来源：github.com/nevertoday/zhongguo-traditional-colors（742 色库）。
+</footer>
+
+<script>
+'use strict';
+/* ══════════════ 数据：十二时辰 × 传统色（全部点名自 742 色库） ══════════════ */
+const HOURS = [
+  { zi: '子', name: '玄青',     hex: '#2B3A4F', range: '23–01', why: '夜半，天色最深' },
+  { zi: '丑', name: '黛蓝',     hex: '#2A3C5C', range: '01–03', why: '鸡鸣，夜色未褪' },
+  { zi: '寅', name: '天青',     hex: '#6C9BCA', range: '03–05', why: '平旦，雨过天青' },
+  { zi: '卯', name: '晨曦红',   hex: '#EA8958', range: '05–07', why: '日出，晨光初染' },
+  { zi: '辰', name: '鹅黄',     hex: '#F2C867', range: '07–09', why: '食时，朝阳暖黄' },
+  { zi: '巳', name: '藤黄',     hex: '#FFD111', range: '09–11', why: '隅中，日色渐盛' },
+  { zi: '午', name: '朱砂红',   hex: '#D92121', range: '11–13', why: '日中，阳极之色' },
+  { zi: '未', name: '琥珀黄',   hex: '#FEBA07', range: '13–15', why: '日昳，光转醇厚' },
+  { zi: '申', name: '鎏金',     hex: '#D4AF37', range: '15–17', why: '晡时，斜阳镀金' },
+  { zi: '酉', name: '落霞',     hex: '#FA7C5E', range: '17–19', why: '日入，晚霞满天' },
+  { zi: '戌', name: '暮山紫',   hex: '#6E4D7E', range: '19–21', why: '黄昏，远山含紫' },
+  { zi: '亥', name: '夜筵青',   hex: '#1D3F5A', range: '21–23', why: '人定，夜色四合' },
+];
+
+/* ══════════════ 三个视觉方向（颜色同样全部点名自色库） ══════════════ */
+const THEMES = [
+  {
+    slug: 'paper', dir: '方向一', name: '宣纸留白',
+    desc: '浅色纸本 + 墨色字形，当前时辰一点朱砂。MIP 严格映射原色，普通浅灰分区可能与盘面合并。',
+    face:   { name: '绫素白', hex: '#F8F3E6' },
+    seg:    { name: '芡食白', hex: '#E2E1E4' },
+    segText:{ name: '松烟墨', hex: '#3B3A3E' },
+    cur:    { name: '朱砂红', hex: '#D92121' },
+    curText:{ name: '汉白玉', hex: '#F8F4ED' },
+    time:   { name: '墨色',   hex: '#1D1B1C' },
+    date:   { name: '松烟墨', hex: '#3B3A3E' },
+    meta:   { name: '瓦灰',   hex: '#867E76' },
+    rim:    { name: '松烟墨', hex: '#3B3A3E' },
+    timeFont: 'serif', rimOn: true,
+    aodFace: { name: '绫素白', hex: '#F8F3E6' }, aodDim: 1,
+  },
+  {
+    slug: 'night', dir: '方向二', name: '玄天黑金',
+    desc: '纯黑底 + 暗金刻度，当前时辰鎏金提亮。为 AMOLED 常亮而生：像素大面积熄灭，省电且夜间不刺眼。',
+    face:   { name: '玄黑',   hex: '#0E100F' },
+    seg:    { name: '缁',     hex: '#2C2C2C' },
+    segText:{ name: '暗金',   hex: '#9C8B4D' },
+    cur:    { name: '鎏金',   hex: '#D4AF37' },
+    curText:{ name: '玄黑',   hex: '#0E100F' },
+    time:   { name: '月白',   hex: '#EEF7F2' },
+    date:   { name: '鎏金',   hex: '#D4AF37' },
+    meta:   { name: '镍灰',   hex: '#9FA39A' },
+    rim:    { name: '暗金',   hex: '#9C8B4D' },
+    timeFont: 'sans', rimOn: true,
+    aodFace: { name: '玄黑', hex: '#0E100F' }, aodDim: 0.55,
+  },
+  {
+    slug: 'cycle', dir: '方向三', name: '十二时辰色',
+    desc: '十二个分区各自披上本时辰的传统色，环带本身就是一圈天光。中央强调色随时辰流转。',
+    face:   { name: '霜白',   hex: '#F2F3F4' },
+    seg:    null, // 每段独立取色
+    segText:{ name: '自适应', hex: '' },
+    cur:    null,
+    curText:{ name: '自适应', hex: '' },
+    time:   { name: '墨色',   hex: '#1D1B1C' },
+    date:   { name: '瓦灰',   hex: '#867E76' },
+    meta:   { name: '瓦灰',   hex: '#867E76' },
+    rim:    { name: '珍珠灰', hex: '#E4DFD7' },
+    timeFont: 'sans', rimOn: false,
+    aodFace: { name: '玄黑', hex: '#0E100F' }, aodDim: 0.55,
+    aodTime: { name: '月白', hex: '#EEF7F2' }, aodDate: { name: '镍灰', hex: '#9FA39A' }, aodMeta: { name: '镍灰', hex: '#9FA39A' },
+  },
+];
+
+/* ══════════════ 工具 ══════════════ */
+const $ = s => document.querySelector(s);
+const DEG = Math.PI / 180;
+const SERIF = 'Noto Serif SC,serif';
+const SANS  = 'Noto Sans SC,sans-serif';
+
+function lum(hex) {
+  const f = i => { const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  return 0.2126 * f(1) + 0.7152 * f(3) + 0.0722 * f(5);
+}
+const inkOn = hex => lum(hex) > 0.32 ? '#1D1B1C' : '#F8F4ED'; // 浅底墨色 / 深底汉白玉
+
+// MIP 模拟：RGB 各通道量化到 4 档（64 色），逼近 MIP 低色数屏
+function q64(hex) {
+  return '#' + [1, 3, 5].map(i => {
+    const v = Math.round(parseInt(hex.slice(i, i + 2), 16) / 85) * 85;
+    return v.toString(16).padStart(2, '0');
+  }).join('');
+}
+
+function hourIndex(h) { return h === 23 ? 0 : Math.floor((h + 1) / 2); }
+
+const state = { time: '23:05', size: 454, duo: true, batt: 62, hr: 72, steps: 8432, h12: false,
+  aod: new URLSearchParams(location.search).get('aod') === '1', mip: false };
+
+function curHour() {
+  const [h] = state.time.split(':').map(Number);
+  return HOURS[hourIndex(h)];
+}
+
+/* ══════════════ SVG 表盘几何 ══════════════ */
+// viewBox 466：外环外径 230，环厚 54，当前分区向内多伸 6% 半径（≈14px）
+const VB = 466, CX = 233, R_OUT = 230, R_IN = 176, EXT = Math.round(233 * 0.06);
+const R_TXT = (R_OUT + R_IN) / 2, GAP = 1.1; // 分段间缝（度）
+
+function pt(r, deg) { return [CX + r * Math.cos(deg * DEG), CX + r * Math.sin(deg * DEG)]; }
+
+function sector(i, extend) {
+  const c = -90 + i * 30, a0 = c - 15 + GAP, a1 = c + 15 - GAP;
+  const ri = R_IN - (extend ? EXT : 0);
+  const [x0, y0] = pt(R_OUT, a0), [x1, y1] = pt(R_OUT, a1);
+  const [x2, y2] = pt(ri, a1), [x3, y3] = pt(ri, a0);
+  return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${R_OUT} ${R_OUT} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)}` +
+         ` L${x2.toFixed(2)} ${y2.toFixed(2)} A${ri} ${ri} 0 0 0 ${x3.toFixed(2)} ${y3.toFixed(2)} Z`;
+}
+
+function fmtTime() {
+  let [h, m] = state.time.split(':').map(Number);
+  if (!state.h12) return { main: String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'), ap: '' };
+  const ap = h < 12 ? '上午' : '下午';
+  h = h % 12 || 12;
+  return { main: h + ':' + String(m).padStart(2, '0'), ap };
+}
+function fmtDate() {
+  const d = new Date();
+  const wk = '日一二三四五六'[d.getDay()];
+  return String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0') + ' 周' + wk;
+}
+
+function faceSVG(theme, px) {
+  const [h, m] = state.time.split(':').map(Number);
+  const cur = hourIndex(h);
+  const aod = state.aod;
+  // 省电模式下先整体调暗（AMOLED 大面积熄像素），MIP 再量化
+  const dimHex = (hex, f) => '#' + [1, 3, 5].map(i =>
+    Math.round(parseInt(hex.slice(i, i + 2), 16) * f).toString(16).padStart(2, '0')).join('');
+  const Q = c => { const v = aod ? dimHex(c, theme.aodDim) : c; return state.mip ? q64(v) : v; };
+  const cFace = Q((aod ? theme.aodFace : theme.face).hex);
+  const t = fmtTime();
+  const tf = theme.timeFont === 'serif' ? SERIF : SANS;
+  const cycle = theme.slug === 'cycle';
+  const curHex = HOURS[cur].hex;
+
+  let s = '';
+  // 盘面
+  s += `<circle cx="${CX}" cy="${CX}" r="${R_OUT}" fill="${cFace}"/>`;
+  if (theme.rimOn && !aod) s += `<circle cx="${CX}" cy="${CX}" r="${R_OUT - 1.5}" fill="none" stroke="${Q(theme.rim.hex)}" stroke-width="2" opacity="0.5"/>`;
+
+  // 十二分区
+  for (let i = 0; i < 12; i++) {
+    const isCur = i === cur;
+    const ziCol = cycle ? HOURS[i].hex : null;
+    if (aod) {
+      // 省电：分段不填色，当前分区只留描边轮廓
+      if (isCur) s += `<path d="${sector(i, true)}" fill="none" stroke="${Q(ziCol || theme.cur.hex)}" stroke-width="3"/>`;
+    } else {
+      const fill = cycle ? Q(ziCol) : (isCur ? Q(theme.cur.hex) : Q(theme.seg.hex));
+      s += `<path d="${sector(i, isCur)}" fill="${fill}"/>`;
+    }
+    const txtCol = cycle
+      ? (aod ? Q(ziCol) : (state.mip ? Q(inkOn(ziCol)) : inkOn(ziCol)))
+      : (isCur ? Q(aod ? theme.cur.hex : theme.curText.hex) : Q(theme.segText.hex));
+    const [tx, ty] = pt(R_TXT, -90 + i * 30);
+    s += `<text x="${tx.toFixed(1)}" y="${(ty + 10).toFixed(1)}" text-anchor="middle" ` +
+         `font-family="${SERIF}" font-size="30" font-weight="${isCur ? 700 : 500}" fill="${txtCol}">${HOURS[i].zi}</text>`;
+  }
+
+  // 中央信息
+  const colTime = Q((aod && theme.aodTime ? theme.aodTime : theme.time).hex);
+  const colDate = Q((aod && theme.aodDate ? theme.aodDate : theme.date).hex);
+  const colMeta = Q((aod && theme.aodMeta ? theme.aodMeta : theme.meta).hex);
+  const accent = cycle ? Q(curHex) : Q(theme.slug === 'night' ? theme.cur.hex : theme.cur.hex);
+  // 时辰小注：子时·三刻（一时辰八刻，每刻 15 分钟）
+  const startH = cur === 0 ? 23 : cur * 2 - 1;
+  const ke = Math.floor((((h - startH + 24) % 24) * 60 + m) / 15); // 0–7
+  s += `<text x="${CX}" y="132" text-anchor="middle" font-family="${SERIF}" font-size="19" font-weight="700" fill="${accent}">${HOURS[cur].zi}时 · ${'初一二三四五六七'[ke]}刻</text>`;
+  // 日期
+  s += `<text x="${CX}" y="166" text-anchor="middle" font-family="${SANS}" font-size="19" fill="${colDate}">${fmtDate()}</text>`;
+  // 时间
+  s += `<text x="${CX}" y="252" text-anchor="middle" font-family="${tf}" font-weight="${aod ? (theme.timeFont === 'serif' ? 700 : 400) : (theme.timeFont === 'serif' ? 900 : 500)}" font-size="64" fill="${colTime}" letter-spacing="1">${t.main}</text>`;
+  if (t.ap) s += `<text x="${CX}" y="282" text-anchor="middle" font-family="${SANS}" font-size="15" fill="${colMeta}">${t.ap}</text>`;
+  // 省电状态隐藏强调线与数据行，只留时辰、日期、时间
+  if (!aod) {
+    s += `<rect x="${CX - 17}" y="296" width="34" height="3" fill="${accent}"/>`;
+    // 电量 ｜ 步数 ｜ 心率：两根分隔线位置固定，信息向两边延伸
+    const by = 336;
+    s += `<g font-family="${SANS}" font-size="17" fill="${colMeta}">`;
+    const bcol = state.batt <= 20 ? Q('#D92121') : colMeta;
+    s += `<text x="${CX - 62}" y="${by + 1}" text-anchor="end" fill="${bcol}">${state.batt}%</text>`;
+    s += `<text x="${CX - 48}" y="${by + 1}" text-anchor="middle">｜</text>`;
+    s += `<text x="${CX}" y="${by + 1}" text-anchor="middle">${state.steps}</text>`;
+    s += `<text x="${CX + 48}" y="${by + 1}" text-anchor="middle">｜</text>`;
+    s += `<text x="${CX + 62}" y="${by + 1}" text-anchor="start">${state.hr > 0 ? state.hr : '--'}</text>`;
+    s += `</g>`;
+  }
+
+  return `<svg width="${px}" height="${px}" viewBox="0 0 ${VB} ${VB}" xmlns="http://www.w3.org/2000/svg" data-theme="${theme.slug}">${s}</svg>`;
+}
+
+/* ══════════════ 渲染页面 ══════════════ */
+function chipHtml(c, extra) {
+  if (!c) return '';
+  const sw = c.hex ? `<i style="background:${c.hex}"></i>` : '';
+  return `<span class="chip">${sw}${c.name}${extra || ''}</span>`;
+}
+
+function render() {
+  const grid = $('#grid');
+  grid.innerHTML = '';
+  THEMES.forEach((theme, idx) => {
+    const card = document.createElement('section');
+    card.className = 'card';
+    card.setAttribute('data-screen-label', '0' + (idx + 1));
+
+    const palette = theme.slug === 'cycle'
+      ? HOURS.map(h => chipHtml(h, '')).join('')
+      : [theme.face, theme.seg, theme.segText, theme.cur, theme.time, theme.meta].map(c => chipHtml(c)).join('');
+
+    card.innerHTML = `
+      <div class="card-head"><h2><span class="no">${theme.dir}</span>${theme.name}</h2><p>${theme.desc}</p></div>
+      <div class="chips">${palette}</div>
+      <div class="stage"></div>
+      <div class="card-foot">
+        <span class="note">${state.aod ? '常亮省电状态' : state.mip ? 'MIP 64 色模拟中' : '全彩'}</span>
+        <button class="btn export">导出 PNG ×2</button>
+      </div>`;
+
+    const stage = card.querySelector('.stage');
+    const mk = px => {
+      const box = document.createElement('div');
+      box.className = 'face-box';
+      box.innerHTML = faceSVG(theme, px) + `<span class="px">${px} px</span>`;
+      return box;
+    };
+    stage.appendChild(mk(state.size));
+    if (state.duo && state.size !== 218) stage.appendChild(mk(218));
+
+    card.querySelector('.export').addEventListener('click', () => exportPNG(theme));
+    grid.appendChild(card);
+  });
+
+  // 时辰配色表
+  const cur = hourIndex(Number(state.time.split(':')[0]));
+  $('#hours').innerHTML = HOURS.map((h, i) => `
+    <div class="hour${i === cur ? ' cur' : ''}">
+      <i style="background:${h.hex}"></i>
+      <div>
+        <span class="zi">${h.zi}</span> <span class="cname">${h.name}</span><br>
+        <span class="hex">${h.hex} · ${h.why}</span>
+      </div>
+      <span class="range">${h.range}</span>
+    </div>`).join('');
+}
+
+/* ══════════════ PNG 导出（主尺寸 + 218px） ══════════════ */
+function exportPNG(theme) {
+  [...new Set([state.size, 218])].forEach(px => {
+    const svg = faceSVG(theme, px).replace(`width="${px}" height="${px}"`, `width="${px * 2}" height="${px * 2}"`);
+    const img = new Image();
+    img.onload = () => {
+      const cv = document.createElement('canvas');
+      cv.width = px * 2; cv.height = px * 2;
+      cv.getContext('2d').drawImage(img, 0, 0);
+      const a = document.createElement('a');
+      a.download = `shichen-${theme.slug}-${px}px.png`;
+      a.href = cv.toDataURL('image/png');
+      a.click();
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+
+/* ══════════════ 控件绑定 ══════════════ */
+$('#timeInput').addEventListener('change', e => { state.time = e.target.value || '00:00'; render(); });
+$('#nowBtn').addEventListener('click', () => {
+  const d = new Date();
+  state.time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  $('#timeInput').value = state.time; render();
+});
+document.querySelectorAll('.qt').forEach(b => b.addEventListener('click', () => {
+  state.time = b.dataset.t; $('#timeInput').value = state.time; render();
+}));
+$('#sizeSel').addEventListener('change', e => { state.size = Number(e.target.value); render(); });
+$('#duoChk').addEventListener('change', e => { state.duo = e.target.checked; render(); });
+$('#battRange').addEventListener('input', e => { state.batt = Number(e.target.value); $('#battVal').textContent = state.batt + '%'; render(); });
+$('#hrInput').addEventListener('change', e => { state.hr = Math.max(0, Number(e.target.value) || 0); render(); });
+$('#stepsInput').addEventListener('change', e => { state.steps = Math.max(0, Number(e.target.value) || 0); render(); });
+$('#h12Chk').addEventListener('change', e => { state.h12 = e.target.checked; render(); });
+$('#aodChk').addEventListener('change', e => { state.aod = e.target.checked; render(); });
+$('#mipChk').addEventListener('change', e => { state.mip = e.target.checked; render(); });
+
+render();
+</script>
+</body>
+</html>
