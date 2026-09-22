@@ -16,18 +16,20 @@ BRANCHES = "子丑寅卯辰巳午未申酉戌亥"
 HOUR_COLORS = ["2B3A4F", "2A3C5C", "6C9BCA", "EA8958", "F2C867", "FFD111",
                "D92121", "FEBA07", "D4AF37", "FA7C5E", "6E4D7E", "1D3F5A"]
 # 名称、字体族、字重、466px 原型字号、必要字形、原型字间距。
+# Kai 为原型确认的楷体（霞鹜文楷静态 Medium 子集），没有可变字重，Ring 与 RingActive 同源，
+# 当前时辰靠放大与强调色区分，与原型一致。
 FONTS = [
-    ("Ring", "Serif", 500, 30, BRANCHES, 0),
-    ("RingActive", "Serif", 700, 30, BRANCHES, 0),
-    ("Caption", "Serif", 700, 19, BRANCHES + "时 · 初一二三四五六七刻", 0),
-    ("Date", "Sans", 400, 19, "0123456789/ 周日一二三四五六", 0),
-    ("TimeSerif", "Serif", 900, 64, "0123456789:", 1),
-    ("TimeSerifSleep", "Serif", 700, 64, "0123456789:", 1),
-    ("TimeSans", "Sans", 500, 64, "0123456789:", 1),
-    ("TimeSansSleep", "Sans", 400, 64, "0123456789:", 1),
-    ("Metric", "Sans", 400, 17, "0123456789%｜-", 0),
-    ("Period", "Sans", 400, 15, "上午下午", 0),
+    ("Ring", "Kai", 500, 31, BRANCHES, 0),
+    ("RingActive", "Kai", 500, 35, BRANCHES, 0),
+    ("Caption", "Kai", 500, 34, BRANCHES + "时 · 初一二三四五六七刻", 0),
+    ("Date", "Sans", 400, 32, "0123456789/ 周日一二三四五六", 0),
+    ("TimeSerif", "Serif", 900, 106, "0123456789:", 1),
+    ("TimeSerifSleep", "Serif", 700, 106, "0123456789:", 1),
+    ("TimeSans", "Sans", 500, 106, "0123456789:", 1),
+    ("TimeSansSleep", "Sans", 400, 106, "0123456789:", 1),
+    ("Metric", "Sans", 400, 36, "0123456789｜-", 0),
 ]
+KAI = "designs/shichen-watchface/fonts/LXGWWenKai-Medium.woff2"
 
 
 def rounded(value):
@@ -35,11 +37,19 @@ def rounded(value):
 
 
 def ttf(family, weight):
-    source = ROOT / f"designs/shichen-watchface/fonts/Noto{family}SC-var.woff2"
+    """字族 → 可用 PIL 打开的 TTF，结果按源文件指纹缓存在 .tools/font-cache。"""
+    if family == 'Kai':
+        source = ROOT / KAI
+        name = 'LXGWWenKai-Medium'
+    else:
+        source = ROOT / f"designs/shichen-watchface/fonts/Noto{family}SC-var.woff2"
+        name = f"Noto{family}SC-{weight}"
     fingerprint = hashlib.sha256(source.read_bytes()).hexdigest()[:12]
-    path = ROOT / f".tools/font-cache/Noto{family}SC-{weight}-{fingerprint}.ttf"
+    path = ROOT / f".tools/font-cache/{name}-{fingerprint}.ttf"
     if not path.exists():
-        font = instantiateVariableFont(TTFont(source), {"wght": weight}, inplace=True)
+        font = TTFont(source)
+        if family != 'Kai':
+            instantiateVariableFont(font, {"wght": weight}, inplace=True)
         font.flavor = None
         # 位图衍生物使用项目名称，授权和原始来源仍保留在 licenses 中。
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -123,13 +133,14 @@ def icon(theme, width, height, target):
     draw.ellipse((mid-radius, mid-radius, mid+radius, mid+radius), fill='#'+theme['face'])
     for i in range(12):
         outer = radius
-        inner = radius*(0.64 if i == 0 else 0.75)
+        # 与原型一致：基准内径 174，当前时辰向内延伸 16（外径 230）。
+        inner = radius*(158/230 if i == 0 else 174/230)
         angles = [math.radians(-105+i*30+1.1+j*27.8/12) for j in range(13)]
         points = [(mid+outer*math.cos(a), mid+outer*math.sin(a)) for a in angles]
         points += [(mid+inner*math.cos(a), mid+inner*math.sin(a)) for a in reversed(angles)]
         color = HOUR_COLORS[i] if theme['cycle'] else theme['current'] if i == 0 else theme['segment']
         draw.polygon(points, fill='#'+color)
-    font = ImageFont.truetype(str(ttf('Serif', 700)), rounded(size*scale*0.42))
+    font = ImageFont.truetype(str(ttf('Kai', 500)), rounded(size*scale*0.42))
     draw.text((mid, mid), '子', font=font, anchor='mm', fill='#'+theme['time'])
     target.mkdir(parents=True, exist_ok=True)
     canvas = Image.new('RGBA', (width, height))
@@ -145,7 +156,7 @@ def generate():
     sizes = sorted({d['width'] for d in available.values()})
     for size in sizes:
         bases = {f[0]: make_font(f, size) for f in FONTS}
-        default_bases = [bases[n] for n in ['Ring', 'RingActive', 'Caption', 'Date', 'TimeSans', 'TimeSansSleep', 'Metric', 'Period']]
+        default_bases = [bases[n] for n in ['Ring', 'RingActive', 'Caption', 'Date', 'TimeSans', 'TimeSansSleep', 'Metric']]
         write(ROOT/f'shared/generated/{size}/FontMetrics.mc',
               '// 由字体真实边界生成，坐标对应原型文字基线。\nmodule FontMetrics {\n'
               + f'    const BASES = {default_bases};\n'
@@ -168,7 +179,8 @@ def generate():
 ''')
         write(app/'source/Theme.mc', theme_source(theme))
         license_text = '\n\n'.join((ROOT/'shared/licenses'/filename).read_text() for filename in
-                                   ['NOTICES.txt', 'notosanssc-OFL.txt', 'notoserifsc-OFL.txt'])
+                                   ['NOTICES.txt', 'notosanssc-OFL.txt', 'notoserifsc-OFL.txt',
+                                    'lxgwwenkai-OFL.txt'])
         write(app/'resources/base/strings.xml', '<resources>\n'
               + f'  <string id="AppName">{escape(theme["name"])}</string>\n'
               + f'  <string id="FontLicense">{escape(license_text)}</string>\n</resources>\n')

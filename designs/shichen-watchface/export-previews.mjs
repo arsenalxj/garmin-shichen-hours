@@ -17,7 +17,7 @@ const stub = new Proxy(function () {}, {
   apply: () => stub,
 });
 const documentStub = { querySelector: () => stub, querySelectorAll: () => [], createElement: () => stub };
-const api = new Function('document', 'location', 'window', `${src}\nreturn { faceSVG, THEMES, state };`)(
+const api = new Function('document', 'location', 'window', `${src}\nreturn { faceSVG, THEMES, RING_FONTS, state };`)(
   documentStub, { search: '' }, {});
 
 const pngDir = path.join(here, 'png');
@@ -27,22 +27,22 @@ fs.mkdirSync(pngDir, { recursive: true });
 const FONTS = `<style>
 @font-face{font-family:'Noto Serif SC';src:url('../fonts/NotoSerifSC-var.woff2') format('woff2');font-weight:100 900}
 @font-face{font-family:'Noto Sans SC';src:url('../fonts/NotoSansSC-var.woff2') format('woff2');font-weight:100 900}
+@font-face{font-family:'LXGW WenKai';src:url('../fonts/LXGWWenKai-Medium.woff2') format('woff2');font-weight:400 700}
+@font-face{font-family:'Zhuque Fangsong';src:url('../fonts/ZhuqueFangsong-Regular.woff2') format('woff2');font-weight:400 700}
+@font-face{font-family:'Yozai';src:url('../fonts/Yozai-Medium.woff2') format('woff2');font-weight:400 700}
 </style>`;
 
 const EDGE = '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge';
 const jobs = [];
 for (const theme of api.THEMES) {
   for (const aod of [false, true]) {
-    for (const px of [454, 208]) {
+    for (const px of [454, 260]) {
       jobs.push({ theme, aod, px });
     }
   }
 }
 
-for (const { theme, aod, px } of jobs) {
-  api.state.aod = aod;
-  const svg = api.faceSVG(theme, px);
-  const name = `${theme.slug}${aod ? '-aod' : ''}-${px}`;
+function shoot(name, svg, px) {
   const wrapper = path.join(pngDir, `_tmp_${name}.html`);
   fs.writeFileSync(wrapper, `<!DOCTYPE html><html><head><meta charset="UTF-8">${FONTS}</head><body style="margin:0">${svg}</body></html>`);
   const url = `http://localhost:4311/shichen-watchface/png/_tmp_${name}.html`;
@@ -52,3 +52,16 @@ for (const { theme, aod, px } of jobs) {
   fs.unlinkSync(wrapper);
   console.log('✓', name + '.png');
 }
+
+for (const { theme, aod, px } of jobs) {
+  api.state.aod = aod;
+  shoot(`${theme.slug}${aod ? '-aod' : ''}-${px}`, api.faceSVG(theme, px), px);
+}
+
+// 环上字体候选对照：同一版式换字体，按 ?ring=<slug> 的状态各出一张。
+api.state.aod = false;
+for (const { slug } of api.RING_FONTS) {
+  api.state.ringFont = slug;
+  shoot(`ring-${slug}-454`, api.faceSVG(api.THEMES[0], 454), 454);
+}
+api.state.ringFont = api.RING_FONTS[0].slug;

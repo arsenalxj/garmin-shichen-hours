@@ -29,8 +29,7 @@ class HourView extends WatchUi.WatchFace {
             WatchUi.loadResource(Rez.Fonts.Date),
             WatchUi.loadResource(Rez.Fonts.Time),
             WatchUi.loadResource(Rez.Fonts.TimeSleep),
-            WatchUi.loadResource(Rez.Fonts.Metric),
-            WatchUi.loadResource(Rez.Fonts.Period)
+            WatchUi.loadResource(Rez.Fonts.Metric)
         ];
     }
 
@@ -67,7 +66,7 @@ class HourView extends WatchUi.WatchFace {
     }
 
     function sector(dc, index, active, outline) {
-        var inner = active ? 162.0 : 176.0;
+        var inner = active ? 158.0 : 174.0;
         var a0 = -90.0 + index * 30 - 15 + 1.1;
         var span = 30.0 - 2.2;
         for (var j = 0; j <= 12; j += 1) {
@@ -118,28 +117,27 @@ class HourView extends WatchUi.WatchFace {
                 ink = color(active ? (sleeping ? Theme.CURRENT : Theme.CURRENT_TEXT) : Theme.SEGMENT_TEXT, sleeping);
             }
             var angle = (-90 + i * 30) * Math.PI / 180.0;
-            text(dc, 233 + 203 * Math.cos(angle), 243 + 203 * Math.sin(angle),
+            text(dc, 233 + 202 * Math.cos(angle), 244 + 202 * Math.sin(angle),
                 active ? 1 : 0, HourLogic.BRANCHES[i], ink, Graphics.TEXT_JUSTIFY_CENTER);
         }
         var accent = color(Theme.CYCLE ? Theme.HOUR_COLORS[current] : Theme.CURRENT, sleeping);
         var colTime = color(sleeping ? Theme.AOD_TIME : Theme.TIME, sleeping);
         var colDate = color(sleeping ? Theme.AOD_DATE : Theme.DATE, sleeping);
         var colMeta = color(sleeping ? Theme.AOD_META : Theme.META, sleeping);
-        text(dc, 233, 132, 2, HourLogic.caption(data.hour, data.minute), accent, Graphics.TEXT_JUSTIFY_CENTER);
-        text(dc, 233, 166, 3, HourLogic.dateText(data.month, data.day, data.dayOfWeek), colDate, Graphics.TEXT_JUSTIFY_CENTER);
-        text(dc, 233, 252, sleeping ? 5 : 4, HourLogic.timeText(data.hour, data.minute, data.is24Hour), colTime, Graphics.TEXT_JUSTIFY_CENTER);
-        if (!data.is24Hour) {
-            text(dc, 233, 282, 7, HourLogic.periodText(data.hour), colMeta, Graphics.TEXT_JUSTIFY_CENTER);
-        }
+        // 中央各行基线按真实字形墨迹排：小注 131 / 日期 170 / 时间 268 / 强调线 281 / 数据 328
+        text(dc, 233, 131, 2, HourLogic.caption(data.hour, data.minute), accent, Graphics.TEXT_JUSTIFY_CENTER);
+        text(dc, 233, 170, 3, HourLogic.dateText(data.month, data.day, data.dayOfWeek), colDate, Graphics.TEXT_JUSTIFY_CENTER);
+        text(dc, 233, 268, sleeping ? 5 : 4, HourLogic.timeText(data.hour, data.minute), colTime, Graphics.TEXT_JUSTIFY_CENTER);
         if (!sleeping) {
             dc.setColor(accent, Graphics.COLOR_TRANSPARENT);
-            dc.fillRectangle(px(216), px(296), px(34), lineWidth(3));
+            dc.fillRectangle(px(209), px(281), px(48), lineWidth(4));
+            // 数据区一行「电量 ｜ 步数 ｜ 心跳」，锚点与原型一致（文字端 ±76、分隔线 ±60）
             var batteryInk = data.battery <= 20 ? 0xD92121 : colMeta;
-            text(dc, 171, 337, 6, data.battery.toString() + "%", batteryInk, Graphics.TEXT_JUSTIFY_RIGHT);
-            text(dc, 185, 337, 6, "｜", colMeta, Graphics.TEXT_JUSTIFY_CENTER);
-            text(dc, 233, 337, 6, HourLogic.metricText(data.steps), colMeta, Graphics.TEXT_JUSTIFY_CENTER);
-            text(dc, 281, 337, 6, "｜", colMeta, Graphics.TEXT_JUSTIFY_CENTER);
-            text(dc, 295, 337, 6, HourLogic.metricText(data.heartRate), colMeta, Graphics.TEXT_JUSTIFY_LEFT);
+            text(dc, 157, 328, 6, data.battery.toString(), batteryInk, Graphics.TEXT_JUSTIFY_RIGHT);
+            text(dc, 173, 328, 6, "｜", colMeta, Graphics.TEXT_JUSTIFY_CENTER);
+            text(dc, 233, 328, 6, HourLogic.metricText(data.steps), colMeta, Graphics.TEXT_JUSTIFY_CENTER);
+            text(dc, 293, 328, 6, "｜", colMeta, Graphics.TEXT_JUSTIFY_CENTER);
+            text(dc, 309, 328, 6, HourLogic.metricText(data.heartRate), colMeta, Graphics.TEXT_JUSTIFY_LEFT);
         }
     }
 }

@@ -1,6 +1,6 @@
 using Toybox.Math;
 
-// 所有时辰计算使用设备本地 24 小时时间，与数字时钟的显示制式无关。
+// 所有时辰计算使用设备本地时间；数字时钟固定 24 小时制，不跟随系统设置。
 module HourLogic {
     const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
     const QUARTERS = ["初", "一", "二", "三", "四", "五", "六", "七"];
@@ -18,17 +18,8 @@ module HourLogic {
         return BRANCHES[hourIndex(hour)] + "时 · " + QUARTERS[quarterIndex(hour, minute)] + "刻";
     }
 
-    function timeText(hour, minute, is24Hour) {
-        if (is24Hour) {
-            return hour.format("%02d") + ":" + minute.format("%02d");
-        }
-        var h = hour % 12;
-        if (h == 0) { h = 12; }
-        return h.toString() + ":" + minute.format("%02d");
-    }
-
-    function periodText(hour) {
-        return hour < 12 ? "上午" : "下午";
+    function timeText(hour, minute) {
+        return hour.format("%02d") + ":" + minute.format("%02d");
     }
 
     function dateText(month, day, dayOfWeek) {

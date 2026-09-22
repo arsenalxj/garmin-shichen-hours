@@ -10,7 +10,6 @@ class HourData {
     var month = 1;
     var day = 1;
     var dayOfWeek = 1;
-    var is24Hour = true;
     var battery = 0;
     var steps = null;
     var heartRate = null;
@@ -27,7 +26,6 @@ class HourData {
         day = info.day;
         dayOfWeek = info.day_of_week;
         var settings = System.getDeviceSettings();
-        is24Hour = settings.is24Hour;
         if (settings has :requiresBurnInProtection) {
             requiresBurnInProtection = settings.requiresBurnInProtection;
         }

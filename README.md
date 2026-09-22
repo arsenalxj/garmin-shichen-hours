@@ -8,7 +8,7 @@
 | `hour-black` | 玄天黑金 | 深色盘面、金色当前时辰、无衬线时间 |
 | `hour-color` | 十二时辰色 | 十二分区独立配色，中央强调色随时辰变化 |
 
-外圈顶部为子时，顺时针排列。当前分区向内加厚，外沿位置不变。中央显示时辰刻数、日期、时间，底部依次为电量、步数、心率。
+外圈顶部为子时，顺时针排列。当前分区向内延伸约 7% 半径，外沿位置不变。中央显示时辰刻数、日期、时间，下方一行「电量 ｜ 步数 ｜ 心跳」，三项固定锚点，位数变化时位置不跳。
 
 ## 效果图
 
@@ -19,17 +19,28 @@
 | 正常 | ![](designs/shichen-watchface/png/paper-454.png) | ![](designs/shichen-watchface/png/night-454.png) | ![](designs/shichen-watchface/png/cycle-454.png) |
 | 常亮省电 | ![](designs/shichen-watchface/png/paper-aod-454.png) | ![](designs/shichen-watchface/png/night-aod-454.png) | ![](designs/shichen-watchface/png/cycle-aod-454.png) |
 
-上表为 454px 大屏效果；同目录 `png/` 下还有各版 208px 小屏图（如 `paper-208.png`）。交互对照（时间、尺寸、电量、心率、步数、MIP 模拟）见 `designs/shichen-watchface/十二时辰表盘-三版对照.html`。
+上表为 454px 大屏效果；同目录 `png/` 下还有各版 260px 图（如 `paper-260.png`）。260 是原型的主尺寸，也是侧载验证机 Forerunner 255 的屏幕尺寸。交互对照（时间、尺寸、电量、心率、步数、MIP 模拟）见 `designs/shichen-watchface/十二时辰表盘-三版对照.html`。
+
+环上时辰字、「子时 · 初刻」小注和启动器图标的「子」都用**霞鹜文楷**（楷体，OFL 1.1），可在原型页顶部的「环上字体」下拉里对比其他候选（也可用 `?ring=` 参数）：
+
+| 候选 | 风格 | 原型页参数 |
+|---|---|---|
+| 霞鹜文楷 | 楷体，温润近手写（已选用） | `wenkai` |
+| 思源宋体 | 宋体，笔画厚实 | `noto` |
+| 朱雀仿宋 | 仿宋，清瘦端正 | `zhuque` |
+| 悠哉字体 | 硬笔手写，个性强 | `yozai` |
+
+四版对照见 `png/ring-fonts-compare.png`，按字体各出一张整盘的图为 `png/ring-<参数>-454.png`。楷体为静态 Medium，没有可变字重，当前时辰靠放大与强调色区分，与原型一致；218px 这类 1 位点阵的 8 色机型上笔画会变细，但阈值化后仍可辨认（对照渲染见提交记录）。候选字体的子集与授权文本在 `designs/shichen-watchface/fonts/`，表盘用的位图字体由 `scripts/generate_resources.py` 生成。
 
 ## 时间、数据与省电
 
-- 读取手表本地时间，数字时钟跟随系统 12/24 小时制。
+- 读取手表本地时间；数字时间固定 24 小时制，不跟随系统设置，与时辰环的 24 小时刻度一致。
 - 每刻 15 分钟，从初刻到七刻；23:00 子时初刻，23:45 子时三刻，00:00 子时四刻，01:00 丑时初刻。
 - 日期在当地午夜切换。步数读取系统当日统计；心率优先使用当前有效读数，否则取五分钟内的最新有效历史样本，没有有效读数显示 `--`。
 - 电量不高于 20% 时用朱砂色提示；心率只显示数字，不添加图标或单位。
 - 普通省电状态按原型取消分区填充，只保留当前分区描边，并隐藏数据行和强调线。
 - 设备报告 `requiresBurnInProtection` 时，省电状态直接全黑，抬腕后恢复完整画面。省电刷新不读取底部健康数据，不使用秒级定时器或后台服务。
-- 只纳入官方资料中 `round` 且支持 `watchFace` 的设备。具体资料与验证范围见 `plans/DEVICES.md` 和 `plans/VALIDATION.md`。
+- 只纳入官方资料中 `round` 且支持 `watchFace` 的设备。具体设备资料与验证范围见 `plans/DEVICES.md`。
 - 按确认排除 Forerunner 45、Forerunner 55、Garmin Swim 2 三款 8 色机型。其余 MIP 严格映射原型颜色，因此白款普通分区可能与背景合并；当前时辰仍有强调色及向内延伸。
 
 ## 本地环境
@@ -82,7 +93,7 @@ python3 scripts/preview.py --theme hour-color --device fenix9pro51mm --scene nor
 python3 scripts/simulate.py --device fenix9pro51mm --file build/preview/hour-color/fenix9pro51mm/normal/preview.prg
 ```
 
-场景定义在 `tests/scenes.json`，包括午夜、下一个时辰、寅时、12 小时制、缺失心率、六位步数、普通省电和受保护屏幕息屏。场景数据只参与 `build/preview/` 的独立验收构建；正式构建排除预览入口，不包含 `tests/preview` 或固定健康数据。
+场景定义在 `tests/scenes.json`，包括午夜、下一个时辰、寅时、低电量、缺失心率、最大步数、普通省电和受保护屏幕息屏。场景数据只参与 `build/preview/` 的独立验收构建；正式构建排除预览入口，不包含 `tests/preview` 或固定健康数据。
 
 ## 本机安装与商店导出
 

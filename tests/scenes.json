@@ -3,9 +3,9 @@
   "midnight": {"hour": 0, "minute": 0, "day": 22, "dayOfWeek": 3, "battery": 86, "steps": 0, "heartRate": 72},
   "next-hour": {"hour": 1, "minute": 0, "battery": 86, "steps": 0, "heartRate": 72},
   "yin": {"hour": 3, "minute": 30, "battery": 86, "steps": 12860, "heartRate": 72},
-  "twelve-hour": {"hour": 0, "minute": 45, "is24Hour": false, "battery": 19, "steps": 99999, "heartRate": 123},
+  "low-battery": {"hour": 0, "minute": 45, "battery": 19, "steps": 99999, "heartRate": 123},
   "missing": {"hour": 9, "minute": 8, "battery": 20, "steps": null, "heartRate": null},
-  "maximum": {"hour": 18, "minute": 8, "battery": 100, "steps": 999999, "heartRate": 199},
+  "maximum": {"hour": 18, "minute": 8, "battery": 100, "steps": 99999, "heartRate": 199},
   "aod": {"hour": 23, "minute": 45, "sleeping": true, "protected": false},
   "protected-sleep": {"hour": 23, "minute": 45, "sleeping": true, "protected": true}
 }

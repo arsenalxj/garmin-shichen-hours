@@ -30,12 +30,9 @@ function midnightBoundaries(logger) {
 
 (:test)
 function displayFormats(logger) {
-    Test.assertEqual(HourLogic.timeText(0, 3, true), "00:03");
-    Test.assertEqual(HourLogic.timeText(0, 3, false), "12:03");
-    Test.assertEqual(HourLogic.timeText(12, 0, false), "12:00");
-    Test.assertEqual(HourLogic.timeText(23, 59, false), "11:59");
-    Test.assertEqual(HourLogic.periodText(0), "上午");
-    Test.assertEqual(HourLogic.periodText(12), "下午");
+    Test.assertEqual(HourLogic.timeText(0, 3), "00:03");
+    Test.assertEqual(HourLogic.timeText(12, 0), "12:00");
+    Test.assertEqual(HourLogic.timeText(23, 59), "23:59");
     Test.assertEqual(HourLogic.dateText(9, 21, 2), "09/21 周一");
     Test.assertEqual(HourLogic.dateText(12, 31, 1), "12/31 周日");
     return true;

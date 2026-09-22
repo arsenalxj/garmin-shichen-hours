@@ -6,5 +6,4 @@
   <font id="Time" filename="../../../shared/resources/280/fonts/TimeSans.fnt" antialias="false"/>
   <font id="TimeSleep" filename="../../../shared/resources/280/fonts/TimeSansSleep.fnt" antialias="false"/>
   <font id="Metric" filename="../../../shared/resources/280/fonts/Metric.fnt" antialias="false"/>
-  <font id="Period" filename="../../../shared/resources/280/fonts/Period.fnt" antialias="false"/>
 </resources>

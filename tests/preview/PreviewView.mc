@@ -8,7 +8,6 @@ class PreviewView extends HourView {
         _data.month = 9;
         _data.day = PreviewScenario.DAY;
         _data.dayOfWeek = PreviewScenario.WEEKDAY;
-        _data.is24Hour = PreviewScenario.IS_24;
         _data.battery = PreviewScenario.BATTERY;
         _data.steps = PreviewScenario.STEPS;
         _data.heartRate = PreviewScenario.HR;

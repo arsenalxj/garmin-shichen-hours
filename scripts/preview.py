@@ -21,7 +21,7 @@ def main():
     target = ROOT/f'build/preview/{args.theme}/{args.device}/{args.scene}'
     scene = scenes[args.scene]
     fields = [('HOUR', 'hour', 23), ('MINUTE', 'minute', 45), ('DAY', 'day', 21), ('WEEKDAY', 'dayOfWeek', 2),
-              ('IS_24', 'is24Hour', True), ('BATTERY', 'battery', 86), ('STEPS', 'steps', 12860), ('HR', 'heartRate', 72),
+              ('BATTERY', 'battery', 86), ('STEPS', 'steps', 12860), ('HR', 'heartRate', 72),
               ('PROTECTED', 'protected', device['burnInProtection']), ('SLEEPING', 'sleeping', False)]
     source = 'module PreviewScenario {\n' + '\n'.join(f'    const {key} = {json.dumps(scene.get(field, default))};' for key,field,default in fields) + '\n}\n'
     write(target/'source/PreviewScenario.mc', source)

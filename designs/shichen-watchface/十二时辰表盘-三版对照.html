@@ -16,6 +16,11 @@
     src: url('fonts/NotoSansSC-var.woff2') format('woff2');
     font-weight: 100 900; font-display: swap;
   }
+  /* 环上时辰字候选（均为 OFL 开源字体，子集与授权见 fonts/ 与 fonts/licenses/）。
+     静态字重声明成区间，避免浏览器对 700 做合成加粗。 */
+  @font-face { font-family: 'LXGW WenKai'; src: url('fonts/LXGWWenKai-Medium.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+  @font-face { font-family: 'Zhuque Fangsong'; src: url('fonts/ZhuqueFangsong-Regular.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+  @font-face { font-family: 'Yozai'; src: url('fonts/Yozai-Medium.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
   :root {
     /* 页面底色取自传统色库 */
     --paper: #F8F4ED;      /* 汉白玉 */
@@ -140,11 +145,15 @@
   <div class="ctl">
     <label>主尺寸</label>
     <select id="sizeSel">
-      <option>218</option><option>240</option><option>260</option>
+      <option>218</option><option>240</option><option selected>260</option>
       <option>280</option><option>360</option><option>390</option><option>416</option>
-      <option selected>454</option><option>466</option>
+      <option>454</option><option>466</option>
     </select>
-    <label class="chk"><input type="checkbox" id="duoChk" checked> 同时看 218px</label>
+    <label class="chk"><input type="checkbox" id="duoChk"> 同时看 218px（255S）</label>
+  </div>
+  <div class="ctl">
+    <label>环上字体</label>
+    <select id="ringSel"></select>
   </div>
   <div class="ctl">
     <label>电量</label>
@@ -157,10 +166,9 @@
   </div>
   <div class="ctl">
     <label>步数</label>
-    <input type="number" id="stepsInput" min="0" max="999999" value="8432" step="100" style="width:88px">
+    <input type="number" id="stepsInput" min="0" max="99999" value="8432" step="100" style="width:88px">
   </div>
   <div class="ctl">
-    <label class="chk"><input type="checkbox" id="h12Chk"> 12 小时制</label>
     <label class="chk"><input type="checkbox" id="aodChk"> 常亮省电</label>
     <label class="chk"><input type="checkbox" id="mipChk"> MIP 64 色模拟</label>
   </div>
@@ -177,7 +185,7 @@
 </section>
 
 <footer>
-  验收要点：十二分区顺时针「子丑寅卯辰巳午未申酉戌亥」、文字均正向、当前分区唯一且向内延伸 ≈6% 半径、22:59→23:00 与 00:59→01:00 时辰切换正确、各时辰文字与中央信息不碰撞。兼容范围不含 Forerunner 45、55、Garmin Swim 2 三款 8 色机型；要求烧屏保护的机型省电时息屏。配色来源：github.com/nevertoday/zhongguo-traditional-colors（742 色库）。
+  验收要点：十二分区顺时针「子丑寅卯辰巳午未申酉戌亥」、文字均正向、当前分区唯一且向内延伸 ≈7% 半径、22:59→23:00 与 00:59→01:00 时辰切换正确、各时辰文字与中央信息不碰撞、数字时间固定 24 小时制。兼容范围不含 Forerunner 45、55、Garmin Swim 2 三款 8 色机型；要求烧屏保护的机型省电时息屏。MIP 反射屏（如 Forerunner 255）靠环境光显色，实机饱和度与对比度天然低于网页效果；「MIP 64 色模拟」按设备 RGB 各 4 档（共 64 色）量化所有颜色，配色表色块同步显示量化结果，色值漂移大的颜色建议换用更饱和的库内邻近色。配色来源：github.com/nevertoday/zhongguo-traditional-colors（742 色库）。
 </footer>
 
 <script>
@@ -254,6 +262,15 @@ const DEG = Math.PI / 180;
 const SERIF = 'Noto Serif SC,serif';
 const SANS  = 'Noto Sans SC,sans-serif';
 
+/* ══════════════ 环上时辰字候选字体（OFL 子集见 fonts/ 与 fonts/licenses/） ══════════════ */
+const RING_FONTS = [
+  { slug: 'wenkai', name: '霞鹜文楷', family: "'LXGW WenKai',serif", note: '楷体，温润近手写（已选用）' },
+  { slug: 'noto',   name: '思源宋体', family: SERIF, note: '宋体，笔画厚实，小尺寸最稳' },
+  { slug: 'zhuque', name: '朱雀仿宋', family: "'Zhuque Fangsong',serif", note: '仿宋，清瘦端正' },
+  { slug: 'yozai',  name: '悠哉字体', family: "'Yozai',serif", note: '硬笔手写，个性强' },
+];
+const ringFont = () => RING_FONTS.find(f => f.slug === state.ringFont) || RING_FONTS[0];
+
 function lum(hex) {
   const f = i => { const c = parseInt(hex.slice(i, i + 2), 16) / 255;
     return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
@@ -271,8 +288,10 @@ function q64(hex) {
 
 function hourIndex(h) { return h === 23 ? 0 : Math.floor((h + 1) / 2); }
 
-const state = { time: '23:05', size: 454, duo: true, batt: 62, hr: 72, steps: 8432, h12: false,
-  aod: new URLSearchParams(location.search).get('aod') === '1', mip: false };
+const _qs = new URLSearchParams(location.search);
+const state = { time: _qs.get('t') || '23:05', size: 260, duo: false, batt: 62, hr: 72,
+  steps: Number(_qs.get('steps')) || 8432, ringFont: _qs.get('ring') || 'wenkai',
+  aod: _qs.get('aod') === '1', mip: _qs.get('mip') === '1' };
 
 function curHour() {
   const [h] = state.time.split(':').map(Number);
@@ -280,8 +299,8 @@ function curHour() {
 }
 
 /* ══════════════ SVG 表盘几何 ══════════════ */
-// viewBox 466：外环外径 230，环厚 54，当前分区向内多伸 6% 半径（≈14px）
-const VB = 466, CX = 233, R_OUT = 230, R_IN = 176, EXT = Math.round(233 * 0.06);
+// viewBox 466：外环外径 230，环厚 56，当前分区向内多伸 ≈7% 半径（16px）
+const VB = 466, CX = 233, R_OUT = 230, R_IN = 174, EXT = 16;
 const R_TXT = (R_OUT + R_IN) / 2, GAP = 1.1; // 分段间缝（度）
 
 function pt(r, deg) { return [CX + r * Math.cos(deg * DEG), CX + r * Math.sin(deg * DEG)]; }
@@ -296,11 +315,9 @@ function sector(i, extend) {
 }
 
 function fmtTime() {
-  let [h, m] = state.time.split(':').map(Number);
-  if (!state.h12) return { main: String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'), ap: '' };
-  const ap = h < 12 ? '上午' : '下午';
-  h = h % 12 || 12;
-  return { main: h + ':' + String(m).padStart(2, '0'), ap };
+  // 数字时间固定 24 小时制，不跟随系统设置；时辰环本身即为 24 小时刻度。
+  const [h, m] = state.time.split(':').map(Number);
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
 }
 function fmtDate() {
   const d = new Date();
@@ -319,6 +336,7 @@ function faceSVG(theme, px) {
   const cFace = Q((aod ? theme.aodFace : theme.face).hex);
   const t = fmtTime();
   const tf = theme.timeFont === 'serif' ? SERIF : SANS;
+  const ring = ringFont();
   const cycle = theme.slug === 'cycle';
   const curHex = HOURS[cur].hex;
 
@@ -342,8 +360,8 @@ function faceSVG(theme, px) {
       ? (aod ? Q(ziCol) : (state.mip ? Q(inkOn(ziCol)) : inkOn(ziCol)))
       : (isCur ? Q(aod ? theme.cur.hex : theme.curText.hex) : Q(theme.segText.hex));
     const [tx, ty] = pt(R_TXT, -90 + i * 30);
-    s += `<text x="${tx.toFixed(1)}" y="${(ty + 10).toFixed(1)}" text-anchor="middle" ` +
-         `font-family="${SERIF}" font-size="30" font-weight="${isCur ? 700 : 500}" fill="${txtCol}">${HOURS[i].zi}</text>`;
+    s += `<text x="${tx.toFixed(1)}" y="${(ty + 11).toFixed(1)}" text-anchor="middle" ` +
+         `font-family="${ring.family}" font-size="${isCur ? 35 : 31}" font-weight="${isCur ? 700 : 500}" fill="${txtCol}">${HOURS[i].zi}</text>`;
   }
 
   // 中央信息
@@ -354,24 +372,26 @@ function faceSVG(theme, px) {
   // 时辰小注：子时·三刻（一时辰八刻，每刻 15 分钟）
   const startH = cur === 0 ? 23 : cur * 2 - 1;
   const ke = Math.floor((((h - startH + 24) % 24) * 60 + m) / 15); // 0–7
-  s += `<text x="${CX}" y="132" text-anchor="middle" font-family="${SERIF}" font-size="19" font-weight="700" fill="${accent}">${HOURS[cur].zi}时 · ${'初一二三四五六七'[ke]}刻</text>`;
+  // 中央各行基线按真实字形墨迹排：小注 131 / 日期 170 / 时间 268 / 强调线 281 / 数据 328。
+  // 数据行外角距环内沿只剩 8px，整块无法继续下移，只能压缩行距把上半部分往下靠（墨迹间距 9/9/11）。
+  // 时间字号 106 是上限：再大，小注顶部就会贴到当前时辰分区（分区内沿 y=75）。
+  s += `<text x="${CX}" y="131" text-anchor="middle" font-family="${ring.family}" font-size="34" font-weight="700" fill="${accent}">${HOURS[cur].zi}时 · ${'初一二三四五六七'[ke]}刻</text>`;
   // 日期
-  s += `<text x="${CX}" y="166" text-anchor="middle" font-family="${SANS}" font-size="19" fill="${colDate}">${fmtDate()}</text>`;
+  s += `<text x="${CX}" y="170" text-anchor="middle" font-family="${SANS}" font-size="32" fill="${colDate}">${fmtDate()}</text>`;
   // 时间
-  s += `<text x="${CX}" y="252" text-anchor="middle" font-family="${tf}" font-weight="${aod ? (theme.timeFont === 'serif' ? 700 : 400) : (theme.timeFont === 'serif' ? 900 : 500)}" font-size="64" fill="${colTime}" letter-spacing="1">${t.main}</text>`;
-  if (t.ap) s += `<text x="${CX}" y="282" text-anchor="middle" font-family="${SANS}" font-size="15" fill="${colMeta}">${t.ap}</text>`;
+  s += `<text x="${CX}" y="268" text-anchor="middle" font-family="${tf}" font-weight="${aod ? (theme.timeFont === 'serif' ? 700 : 400) : (theme.timeFont === 'serif' ? 900 : 500)}" font-size="106" fill="${colTime}" letter-spacing="1">${t}</text>`;
   // 省电状态隐藏强调线与数据行，只留时辰、日期、时间
   if (!aod) {
-    s += `<rect x="${CX - 17}" y="296" width="34" height="3" fill="${accent}"/>`;
-    // 电量 ｜ 步数 ｜ 心率：两根分隔线位置固定，信息向两边延伸
-    const by = 336;
-    s += `<g font-family="${SANS}" font-size="17" fill="${colMeta}">`;
+    s += `<rect x="${CX - 24}" y="281" width="48" height="4" fill="${accent}"/>`;
+    // 数据区一行「电量 ｜ 步数 ｜ 心跳」。三项固定锚点（文字端 ±76、分隔线 ±60），
+    // 位数变化时位置不跳；字号 36 与基线 328 是最宽取值仍能留在环内沿以内的上限。
+    s += `<g font-family="${SANS}" font-size="36" fill="${colMeta}">`;
     const bcol = state.batt <= 20 ? Q('#D92121') : colMeta;
-    s += `<text x="${CX - 62}" y="${by + 1}" text-anchor="end" fill="${bcol}">${state.batt}%</text>`;
-    s += `<text x="${CX - 48}" y="${by + 1}" text-anchor="middle">｜</text>`;
-    s += `<text x="${CX}" y="${by + 1}" text-anchor="middle">${state.steps}</text>`;
-    s += `<text x="${CX + 48}" y="${by + 1}" text-anchor="middle">｜</text>`;
-    s += `<text x="${CX + 62}" y="${by + 1}" text-anchor="start">${state.hr > 0 ? state.hr : '--'}</text>`;
+    s += `<text x="${CX - 76}" y="328" text-anchor="end" fill="${bcol}">${state.batt}</text>`;
+    s += `<text x="${CX - 60}" y="328" text-anchor="middle">｜</text>`;
+    s += `<text x="${CX}" y="328" text-anchor="middle">${state.steps}</text>`;
+    s += `<text x="${CX + 60}" y="328" text-anchor="middle">｜</text>`;
+    s += `<text x="${CX + 76}" y="328" text-anchor="start">${state.hr > 0 ? state.hr : '--'}</text>`;
     s += `</g>`;
   }
 
@@ -381,7 +401,7 @@ function faceSVG(theme, px) {
 /* ══════════════ 渲染页面 ══════════════ */
 function chipHtml(c, extra) {
   if (!c) return '';
-  const sw = c.hex ? `<i style="background:${c.hex}"></i>` : '';
+  const sw = c.hex ? `<i style="background:${state.mip ? q64(c.hex) : c.hex}" title="${state.mip ? 'MIP 量化后 ' + q64(c.hex) : c.hex}"></i>` : '';
   return `<span class="chip">${sw}${c.name}${extra || ''}</span>`;
 }
 
@@ -402,7 +422,7 @@ function render() {
       <div class="chips">${palette}</div>
       <div class="stage"></div>
       <div class="card-foot">
-        <span class="note">${state.aod ? '常亮省电状态' : state.mip ? 'MIP 64 色模拟中' : '全彩'}</span>
+        <span class="note">${state.aod ? '常亮省电状态' : state.mip ? 'MIP 64 色模拟中' : '全彩'} · 环上字体：${ringFont().name}</span>
         <button class="btn export">导出 PNG ×2</button>
       </div>`;
 
@@ -420,17 +440,20 @@ function render() {
     grid.appendChild(card);
   });
 
-  // 时辰配色表
+  // 时辰配色表（MIP 模式下色块显示量化后的真实取值，便于预判实机效果）
   const cur = hourIndex(Number(state.time.split(':')[0]));
-  $('#hours').innerHTML = HOURS.map((h, i) => `
+  $('#hours').innerHTML = HOURS.map((h, i) => {
+    const q = q64(h.hex), shifted = q.toLowerCase() !== h.hex.toLowerCase();
+    return `
     <div class="hour${i === cur ? ' cur' : ''}">
-      <i style="background:${h.hex}"></i>
+      <i style="background:${state.mip ? q : h.hex}" title="${state.mip && shifted ? 'MIP 量化后 ' + q : h.hex}"></i>
       <div>
         <span class="zi">${h.zi}</span> <span class="cname">${h.name}</span><br>
-        <span class="hex">${h.hex} · ${h.why}</span>
+        <span class="hex">${state.mip && shifted ? h.hex + '→' + q : h.hex} · ${h.why}</span>
       </div>
       <span class="range">${h.range}</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 /* ══════════════ PNG 导出（主尺寸 + 218px） ══════════════ */
@@ -461,12 +484,14 @@ $('#nowBtn').addEventListener('click', () => {
 document.querySelectorAll('.qt').forEach(b => b.addEventListener('click', () => {
   state.time = b.dataset.t; $('#timeInput').value = state.time; render();
 }));
+$('#ringSel').innerHTML = RING_FONTS.map(f => `<option value="${f.slug}">${f.name} · ${f.note}</option>`).join('');
+$('#ringSel').value = state.ringFont;
+$('#ringSel').addEventListener('change', e => { state.ringFont = e.target.value; render(); });
 $('#sizeSel').addEventListener('change', e => { state.size = Number(e.target.value); render(); });
 $('#duoChk').addEventListener('change', e => { state.duo = e.target.checked; render(); });
 $('#battRange').addEventListener('input', e => { state.batt = Number(e.target.value); $('#battVal').textContent = state.batt + '%'; render(); });
 $('#hrInput').addEventListener('change', e => { state.hr = Math.max(0, Number(e.target.value) || 0); render(); });
 $('#stepsInput').addEventListener('change', e => { state.steps = Math.max(0, Number(e.target.value) || 0); render(); });
-$('#h12Chk').addEventListener('change', e => { state.h12 = e.target.checked; render(); });
 $('#aodChk').addEventListener('change', e => { state.aod = e.target.checked; render(); });
 $('#mipChk').addEventListener('change', e => { state.mip = e.target.checked; render(); });
 

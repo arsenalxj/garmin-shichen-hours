@@ -6,4 +6,9 @@ Noto Sans SC:
 Noto Serif SC:
 (c) 2017-2024 Adobe (http://www.adobe.com/).
 
+LXGW WenKai / 霞鹜文楷:
+Copyright 2021-2026 LXGW (https://github.com/lxgw/LxgwWenKai), with Reserved Font Name '霞鹜'、'霞鶩'、'落霞孤鹜'、'落霞孤鶩' and 'LXGW'.
+衍生的 Klee One 部分：Copyright 2020 The Klee Project Authors (https://github.com/fontworks-fonts/Klee)。
+
 上述字体与其 Shichen 位图衍生字体遵循随附的 SIL Open Font License 1.1。
+位图衍生字体（表盘内嵌的 Shichen* 位图字体）不使用保留字体名，只保留本声明与原始来源。
