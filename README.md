@@ -12,25 +12,20 @@
 
 ## 效果图
 
-设计原型渲染图（子时·初刻 23:05），由 `designs/shichen-watchface/export-previews.mjs` 从原型页重新生成：
+Forerunner 255 标准版的 260 × 260 像素预览（子时·三刻 23:45，固定日期 09/21 周一）。原型直接复用正式包的圆环、字形和定位资源，以下图片由 `designs/shichen-watchface/export-previews.mjs` 导出：
 
 | 状态 | 宣纸留白 `hour-white` | 玄天黑金 `hour-black` | 十二时辰色 `hour-color` |
 |---|---|---|---|
-| 正常 | ![](designs/shichen-watchface/png/paper-454.png) | ![](designs/shichen-watchface/png/night-454.png) | ![](designs/shichen-watchface/png/cycle-454.png) |
-| 常亮省电 | ![](designs/shichen-watchface/png/paper-aod-454.png) | ![](designs/shichen-watchface/png/night-aod-454.png) | ![](designs/shichen-watchface/png/cycle-aod-454.png) |
+| 正常 | ![](designs/shichen-watchface/png/paper-260.png) | ![](designs/shichen-watchface/png/night-260.png) | ![](designs/shichen-watchface/png/cycle-260.png) |
+| 常亮省电 | ![](designs/shichen-watchface/png/paper-aod-260.png) | ![](designs/shichen-watchface/png/night-aod-260.png) | ![](designs/shichen-watchface/png/cycle-aod-260.png) |
 
-上表为 454px 大屏效果；同目录 `png/` 下还有各版 260px 图（如 `paper-260.png`）。260 是原型的主尺寸，也是侧载验证机 Forerunner 255 的屏幕尺寸。交互对照（时间、尺寸、电量、心率、步数、MIP 模拟）见 `designs/shichen-watchface/十二时辰表盘-三版对照.html`。
+打开 [三版交互原型](designs/shichen-watchface/十二时辰表盘-三版对照.html)，可切换时间、尺寸、电量、心率、步数和省电状态。默认「260px + 思源黑体 + MIP 64 色」展示 FR255 标准版的实际像素资源；其他尺寸及候选字体使用矢量预览。`png/` 同时保留三款 454px 全彩预览。
 
-环上时辰字、「子时 · 初刻」小注和启动器图标的「子」都用**霞鹜文楷**（楷体，OFL 1.1），可在原型页顶部的「环上字体」下拉里对比其他候选（也可用 `?ring=` 参数）：
+原型与成品的环上时辰字、小注、日期与数据行均默认使用 **Noto Sans SC**；白款时间为 Noto Serif SC，其他两款时间为 Noto Sans SC。启动器图标使用霞鹜文楷；原型保留其他字体作为候选对照。字体来源和授权见 [字体说明](shared/licenses/README.md)。
 
-| 候选 | 风格 | 原型页参数 |
-|---|---|---|
-| 霞鹜文楷 | 楷体，温润近手写（已选用） | `wenkai` |
-| 思源宋体 | 宋体，笔画厚实 | `noto` |
-| 朱雀仿宋 | 仿宋，清瘦端正 | `zhuque` |
-| 悠哉字体 | 硬笔手写，个性强 | `yozai` |
+Forerunner 255 标准版使用专用像素资源：圆环以 8 倍采样生成后缩到 260px，中文和数字的边缘预先与背景混合，再映射到设备的 64 色。小字采用 400 字重，无衬线时间正常/省电为 350/300，白款衬线时间为 600/450，改善圆环台阶、中文笔画粗细跳变及数字硬边。其他设备沿用通用绘制资源。
 
-四版对照见 `png/ring-fonts-compare.png`，按字体各出一张整盘的图为 `png/ring-<参数>-454.png`。楷体为静态 Medium，没有可变字重，当前时辰靠放大与强调色区分，与原型一致；218px 这类 1 位点阵的 8 色机型上笔画会变细，但阈值化后仍可辨认（对照渲染见提交记录）。候选字体的子集与授权文本在 `designs/shichen-watchface/fonts/`，表盘用的位图字体由 `scripts/generate_resources.py` 生成。
+2026-09-23 已获得 FR255 标准版真机效果明显改善的反馈。三主题共 21 项 SDK 原生测试通过，8 张原生截图与资源合成结果逐像素一致；本页六张 FR255 图也与对应原生截图一致。反射屏在环境光下的显色和续航仍以真机为准。原生验证范围与生成方式见 [FR255 绘制说明](plans/FR255_RENDERING.md)。
 
 ## 时间、数据与省电
 
@@ -68,6 +63,9 @@ python3 scripts/build.py --debug
 # 指定设备与主题
 python3 scripts/build.py --theme hour-white --device fenix9pro51mm
 
+# Forerunner 255 标准版：三个主题正式 PRG
+python3 scripts/build.py --device fr255
+
 # 本机全部符合条件的机型
 python3 scripts/build.py --all
 
@@ -75,8 +73,10 @@ python3 scripts/build.py --all
 python3 -m unittest discover -s tests -p 'test_*.py'
 
 # 原生测试：先在官方模拟器中打开 ConnectIQ.app
-python3 scripts/build.py --theme hour-white --device venu --test
-python3 scripts/simulate.py --theme hour-white --device venu --test
+python3 scripts/build.py --device fr255 --test
+python3 scripts/simulate.py --theme hour-white --device fr255 --test
+python3 scripts/simulate.py --theme hour-black --device fr255 --test
+python3 scripts/simulate.py --theme hour-color --device fr255 --test
 
 # 正常读取模拟器系统数据
 python3 scripts/simulate.py --theme hour-white --device fenix9pro51mm
@@ -85,6 +85,15 @@ python3 scripts/simulate.py --theme hour-white --device fenix9pro51mm
 模拟器程序位于 `.tools/sdk/bin/ConnectIQ.app`。`simulate.py` 运行普通表盘时会一直连接到该应用结束；从模拟器 File → Kill App 结束当前实例后可切换目标。模拟器产生的心率、步数用于开发验证，不是实表测量数据。
 
 构建日志在 `build/<模式>/<主题>/<设备>.log`，本次批次汇总在对应目录的 `report.json`。原生测试另保存 `.simulation.log` 和 `.test-result.json`；SDK 的测试成功汇总才是通过依据。
+
+资源生成时会同步原型的 `fr255-raster.js`。若只更新原型与 README 配图，可执行：
+
+```sh
+python3 scripts/mip_resources.py --prototype-only
+node designs/shichen-watchface/export-previews.mjs
+```
+
+PNG 导出使用本机 Microsoft Edge（可通过 `EDGE_BIN` 指定路径），无需启动网页服务或安装 Node 依赖。260px 图片保留原始像素，454px 图片展示通用全彩字体与布局。
 
 ## 固定数据验收
 
@@ -106,5 +115,7 @@ python3 scripts/verify_exports.py
 导出文件位于 `build/export/hour-white/hour-white.iq`、`build/export/hour-black/hour-black.iq`、`build/export/hour-color/hour-color.iq`。导出不会上传 Connect IQ 商店。
 
 实表侧载使用 `build/release/<主题>/<设备>.prg`，必须选择与手表匹配的设备 ID；手表通过 USB 挂载后，将对应 PRG 放入 `GARMIN/APPS/`，断开连接后在手表表盘列表中选择。`.iq` 用于商店提交，不能代替单机型 PRG 直接侧载。
+
+FR255 标准版对应 `fr255`。整理安装包时将三个主题的 `fr255.prg` 分别重命名为 `hour-white.prg`、`hour-black.prg`、`hour-color.prg`，放入 `build/install/fr255/` 后复制到手表，避免同名覆盖。已交付 ZIP 位于 `build/install/Forerunner255-标准版.zip`；构建与安装产物不纳入 Git。
 
 字体来源与 SIL OFL 授权位于 `shared/licenses/`，发布交付需附带授权文本。三个应用有独立 ID，可以分别上架，尚未进行商店发布。

@@ -29,6 +29,10 @@ def main():
     source_dirs = [ROOT/'shared/source', ROOT/args.theme/'source', ROOT/'tests/preview',
                    ROOT/f'shared/generated/{device["width"]}', target/'source']
     resources = [ROOT/args.theme/'resources/base', ROOT/args.theme/f'resources/{device["width"]}-{suffix}', ROOT/args.theme/f'resources/icon{device["icon"]}x{device["iconHeight"]}']
+    source_dirs.append(ROOT / ('shared/generated/fr255/' + args.theme if args.device == 'fr255'
+                              else 'shared/generated/raster-default'))
+    if args.device == 'fr255':
+        resources.append(ROOT / args.theme / 'resources/fr255-raster')
     jungle = f'project.manifest = {ROOT/args.theme/"manifest.xml"}\n'
     jungle += 'base.sourcePath = '+ ';'.join(map(str,source_dirs))+'\n'
     jungle += 'base.resourcePath = '+ ';'.join(map(str,resources))+'\n'

@@ -1,15 +1,15 @@
 info face="ShichenTimeSans" size=95 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=0,0
-common lineHeight=74 base=73 scaleW=256 scaleH=224 pages=1 packed=0
+common lineHeight=72 base=71 scaleW=256 scaleH=219 pages=1 packed=0
 page id=0 file="TimeSans.png"
 chars count=11
-char id=48 x=0 y=0 width=54 height=74 xoffset=0 yoffset=0 xadvance=55 page=0 chnl=15
-char id=49 x=55 y=0 width=54 height=71 xoffset=0 yoffset=2 xadvance=55 page=0 chnl=15
-char id=50 x=110 y=0 width=54 height=72 xoffset=0 yoffset=1 xadvance=55 page=0 chnl=15
-char id=51 x=165 y=0 width=54 height=74 xoffset=0 yoffset=0 xadvance=55 page=0 chnl=15
-char id=52 x=0 y=75 width=54 height=71 xoffset=0 yoffset=2 xadvance=55 page=0 chnl=15
-char id=53 x=55 y=75 width=54 height=72 xoffset=0 yoffset=2 xadvance=55 page=0 chnl=15
-char id=54 x=110 y=75 width=54 height=74 xoffset=0 yoffset=0 xadvance=55 page=0 chnl=15
-char id=55 x=165 y=75 width=54 height=71 xoffset=0 yoffset=2 xadvance=55 page=0 chnl=15
-char id=56 x=0 y=150 width=54 height=73 xoffset=0 yoffset=1 xadvance=55 page=0 chnl=15
-char id=57 x=55 y=150 width=54 height=73 xoffset=0 yoffset=1 xadvance=55 page=0 chnl=15
-char id=58 x=110 y=150 width=29 height=53 xoffset=0 yoffset=21 xadvance=30 page=0 chnl=15
+char id=48 x=0 y=0 width=51 height=72 xoffset=0 yoffset=0 xadvance=52 page=0 chnl=15
+char id=49 x=52 y=0 width=51 height=70 xoffset=0 yoffset=1 xadvance=52 page=0 chnl=15
+char id=50 x=104 y=0 width=51 height=71 xoffset=0 yoffset=0 xadvance=52 page=0 chnl=15
+char id=51 x=156 y=0 width=51 height=72 xoffset=0 yoffset=0 xadvance=52 page=0 chnl=15
+char id=52 x=0 y=73 width=51 height=70 xoffset=0 yoffset=1 xadvance=52 page=0 chnl=15
+char id=53 x=52 y=73 width=51 height=71 xoffset=0 yoffset=1 xadvance=52 page=0 chnl=15
+char id=54 x=104 y=73 width=51 height=72 xoffset=0 yoffset=0 xadvance=52 page=0 chnl=15
+char id=55 x=156 y=73 width=51 height=70 xoffset=0 yoffset=2 xadvance=52 page=0 chnl=15
+char id=56 x=0 y=146 width=51 height=72 xoffset=0 yoffset=0 xadvance=52 page=0 chnl=15
+char id=57 x=52 y=146 width=51 height=72 xoffset=0 yoffset=0 xadvance=52 page=0 chnl=15
+char id=58 x=104 y=146 width=24 height=50 xoffset=0 yoffset=22 xadvance=25 page=0 chnl=15

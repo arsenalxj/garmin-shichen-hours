@@ -1,15 +1,15 @@
 info face="ShichenTimeSerif" size=59 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=0,0
-common lineHeight=46 base=45 scaleW=256 scaleH=94 pages=1 packed=0
+common lineHeight=47 base=45 scaleW=256 scaleH=94 pages=1 packed=0
 page id=0 file="TimeSerif.png"
 chars count=11
-char id=48 x=0 y=0 width=36 height=46 xoffset=0 yoffset=0 xadvance=37 page=0 chnl=15
-char id=49 x=37 y=0 width=27 height=45 xoffset=0 yoffset=0 xadvance=28 page=0 chnl=15
-char id=50 x=65 y=0 width=36 height=45 xoffset=0 yoffset=0 xadvance=37 page=0 chnl=15
-char id=51 x=102 y=0 width=36 height=46 xoffset=0 yoffset=0 xadvance=37 page=0 chnl=15
-char id=52 x=139 y=0 width=36 height=46 xoffset=0 yoffset=0 xadvance=37 page=0 chnl=15
-char id=53 x=176 y=0 width=36 height=45 xoffset=0 yoffset=1 xadvance=37 page=0 chnl=15
-char id=54 x=213 y=0 width=35 height=46 xoffset=0 yoffset=0 xadvance=36 page=0 chnl=15
-char id=55 x=0 y=47 width=36 height=44 xoffset=0 yoffset=1 xadvance=37 page=0 chnl=15
-char id=56 x=37 y=47 width=36 height=46 xoffset=0 yoffset=0 xadvance=37 page=0 chnl=15
-char id=57 x=74 y=47 width=37 height=46 xoffset=0 yoffset=0 xadvance=38 page=0 chnl=15
-char id=58 x=112 y=47 width=21 height=33 xoffset=0 yoffset=13 xadvance=22 page=0 chnl=15
+char id=48 x=0 y=0 width=35 height=45 xoffset=0 yoffset=1 xadvance=36 page=0 chnl=15
+char id=49 x=36 y=0 width=28 height=45 xoffset=0 yoffset=0 xadvance=29 page=0 chnl=15
+char id=50 x=65 y=0 width=35 height=44 xoffset=0 yoffset=1 xadvance=36 page=0 chnl=15
+char id=51 x=101 y=0 width=35 height=45 xoffset=0 yoffset=1 xadvance=36 page=0 chnl=15
+char id=52 x=137 y=0 width=34 height=46 xoffset=0 yoffset=0 xadvance=35 page=0 chnl=15
+char id=53 x=172 y=0 width=34 height=44 xoffset=0 yoffset=2 xadvance=35 page=0 chnl=15
+char id=54 x=207 y=0 width=35 height=45 xoffset=0 yoffset=1 xadvance=36 page=0 chnl=15
+char id=55 x=0 y=47 width=34 height=43 xoffset=0 yoffset=2 xadvance=35 page=0 chnl=15
+char id=56 x=35 y=47 width=34 height=45 xoffset=0 yoffset=1 xadvance=35 page=0 chnl=15
+char id=57 x=70 y=47 width=35 height=46 xoffset=0 yoffset=1 xadvance=36 page=0 chnl=15
+char id=58 x=106 y=47 width=20 height=32 xoffset=0 yoffset=14 xadvance=21 page=0 chnl=15

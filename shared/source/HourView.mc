@@ -9,11 +9,13 @@ class HourView extends WatchUi.WatchFace {
     var _scale = 1.0;
     var _cx = 0;
     var _fonts as Lang.Array<Graphics.FontType> = [];
+    var _raster as HourRaster or Null;
     var _polygon as Lang.Array<Lang.Array<Lang.Number>>;
 
     function initialize() {
         WatchFace.initialize();
         _data = new HourData();
+        _raster = RasterAssets.ENABLED ? new HourRaster() : null;
         // 30° 扇环，每边 12 段；重用顶点数组，避免每帧制造大量小对象。
         _polygon = [];
         for (var i = 0; i < 26; i += 1) { _polygon.add([0, 0]); }
@@ -22,6 +24,10 @@ class HourView extends WatchUi.WatchFace {
     function onLayout(dc) {
         _scale = dc.getWidth() / 466.0;
         _cx = dc.getWidth() / 2;
+        if (_raster == null) { loadFonts(); }
+    }
+
+    function loadFonts() {
         _fonts = [
             WatchUi.loadResource(Rez.Fonts.Ring),
             WatchUi.loadResource(Rez.Fonts.RingActive),
@@ -57,6 +63,10 @@ class HourView extends WatchUi.WatchFace {
     }
 
     function text(dc, x, baseline, fontIndex, value, ink, alignment) {
+        if (_raster != null && _raster.text(dc, px(x), px(baseline), fontIndex, value, ink, alignment)) {
+            return;
+        }
+        if (_fonts.size() == 0) { loadFonts(); }
         var base = FontMetrics.BASES[fontIndex];
         if (Theme.SERIF && (fontIndex == 4 || fontIndex == 5)) {
             base = FontMetrics.SERIF_BASES[fontIndex - 4];
@@ -95,30 +105,33 @@ class HourView extends WatchUi.WatchFace {
         dc.clear();
         if (HourLogic.sleepBlanks(data.requiresBurnInProtection, sleeping)) { return; }
         if (dc has :setAntiAlias) { dc.setAntiAlias(true); }
-        var face = color(sleeping ? Theme.AOD_FACE : Theme.FACE, sleeping);
-        dc.setColor(face, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(_cx, _cx, px(230));
-        if (Theme.RIM_ON && !sleeping) {
-            dc.setColor(Theme.RIM_BLEND, Graphics.COLOR_TRANSPARENT);
-            dc.setPenWidth(lineWidth(2));
-            dc.drawCircle(_cx, _cx, px(228.5));
-            dc.setPenWidth(1);
-        }
         var current = HourLogic.hourIndex(data.hour);
-        for (var i = 0; i < 12; i += 1) {
-            var active = i == current;
-            var fill = Theme.CYCLE ? Theme.HOUR_COLORS[i] : (active ? Theme.CURRENT : Theme.SEGMENT);
-            dc.setColor(color(fill, sleeping), Graphics.COLOR_TRANSPARENT);
-            if (!sleeping || active) { sector(dc, i, active, sleeping); }
-            var ink;
-            if (Theme.CYCLE) {
-                ink = sleeping ? color(Theme.HOUR_COLORS[i], true) : Theme.HOUR_INKS[i];
-            } else {
-                ink = color(active ? (sleeping ? Theme.CURRENT : Theme.CURRENT_TEXT) : Theme.SEGMENT_TEXT, sleeping);
+        var raster = _raster != null && _raster.begin(dc, current, sleeping);
+        if (!raster) {
+            var face = color(sleeping ? Theme.AOD_FACE : Theme.FACE, sleeping);
+            dc.setColor(face, Graphics.COLOR_TRANSPARENT);
+            dc.fillCircle(_cx, _cx, px(230));
+            if (Theme.RIM_ON && !sleeping) {
+                dc.setColor(Theme.RIM_BLEND, Graphics.COLOR_TRANSPARENT);
+                dc.setPenWidth(lineWidth(2));
+                dc.drawCircle(_cx, _cx, px(228.5));
+                dc.setPenWidth(1);
             }
-            var angle = (-90 + i * 30) * Math.PI / 180.0;
-            text(dc, 233 + 202 * Math.cos(angle), 244 + 202 * Math.sin(angle),
-                active ? 1 : 0, HourLogic.BRANCHES[i], ink, Graphics.TEXT_JUSTIFY_CENTER);
+            for (var i = 0; i < 12; i += 1) {
+                var active = i == current;
+                var fill = Theme.CYCLE ? Theme.HOUR_COLORS[i] : (active ? Theme.CURRENT : Theme.SEGMENT);
+                dc.setColor(color(fill, sleeping), Graphics.COLOR_TRANSPARENT);
+                if (!sleeping || active) { sector(dc, i, active, sleeping); }
+                var ink;
+                if (Theme.CYCLE) {
+                    ink = sleeping ? color(Theme.HOUR_COLORS[i], true) : Theme.HOUR_INKS[i];
+                } else {
+                    ink = color(active ? (sleeping ? Theme.CURRENT : Theme.CURRENT_TEXT) : Theme.SEGMENT_TEXT, sleeping);
+                }
+                var angle = (-90 + i * 30) * Math.PI / 180.0;
+                text(dc, 233 + 202 * Math.cos(angle), 244 + 202 * Math.sin(angle),
+                    active ? 1 : 0, HourLogic.BRANCHES[i], ink, Graphics.TEXT_JUSTIFY_CENTER);
+            }
         }
         var accent = color(Theme.CYCLE ? Theme.HOUR_COLORS[current] : Theme.CURRENT, sleeping);
         var colTime = color(sleeping ? Theme.AOD_TIME : Theme.TIME, sleeping);

@@ -1,0 +1,36 @@
+<resources>
+  <bitmap id="MipFace0" filename="MipFace0.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_0" filename="MipHour0_0.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_1" filename="MipHour0_1.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_2" filename="MipHour0_2.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_3" filename="MipHour0_3.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_4" filename="MipHour0_4.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_5" filename="MipHour0_5.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_6" filename="MipHour0_6.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_7" filename="MipHour0_7.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_8" filename="MipHour0_8.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_9" filename="MipHour0_9.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_10" filename="MipHour0_10.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour0_11" filename="MipHour0_11.png" dithering="none" compress="true"/>
+  <bitmap id="MipFont0_2_0" filename="MipFont0_2_0.png" dithering="none" compress="true"/>
+  <bitmap id="MipFont0_3_0" filename="MipFont0_3_0.png" dithering="none" compress="true"/>
+  <bitmap id="MipFont0_4_0" filename="MipFont0_4_0.png" dithering="none" compress="true"/>
+  <bitmap id="MipFont0_6_0" filename="MipFont0_6_0.png" dithering="none" compress="true"/>
+  <bitmap id="MipFont0_6_1" filename="MipFont0_6_1.png" dithering="none" compress="true"/>
+  <bitmap id="MipFace1" filename="MipFace1.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_0" filename="MipHour1_0.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_1" filename="MipHour1_1.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_2" filename="MipHour1_2.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_3" filename="MipHour1_3.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_4" filename="MipHour1_4.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_5" filename="MipHour1_5.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_6" filename="MipHour1_6.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_7" filename="MipHour1_7.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_8" filename="MipHour1_8.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_9" filename="MipHour1_9.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_10" filename="MipHour1_10.png" dithering="none" compress="true"/>
+  <bitmap id="MipHour1_11" filename="MipHour1_11.png" dithering="none" compress="true"/>
+  <bitmap id="MipFont1_2_0" filename="MipFont1_2_0.png" dithering="none" compress="true"/>
+  <bitmap id="MipFont1_3_0" filename="MipFont1_3_0.png" dithering="none" compress="true"/>
+  <bitmap id="MipFont1_5_0" filename="MipFont1_5_0.png" dithering="none" compress="true"/>
+</resources>

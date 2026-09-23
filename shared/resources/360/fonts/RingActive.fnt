@@ -1,16 +1,16 @@
-info face="ShichenRingActive" size=27 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=0,0
-common lineHeight=27 base=23 scaleW=256 scaleH=54 pages=1 packed=0
+info face="ShichenRingActive" size=26 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=0,0
+common lineHeight=25 base=22 scaleW=256 scaleH=51 pages=1 packed=0
 page id=0 file="RingActive.png"
 chars count=12
-char id=19985 x=0 y=0 width=27 height=23 xoffset=0 yoffset=2 xadvance=27 page=0 chnl=15
-char id=20133 x=28 y=0 width=27 height=26 xoffset=0 yoffset=0 xadvance=27 page=0 chnl=15
-char id=21320 x=56 y=0 width=27 height=26 xoffset=0 yoffset=0 xadvance=27 page=0 chnl=15
-char id=21359 x=84 y=0 width=27 height=26 xoffset=0 yoffset=1 xadvance=27 page=0 chnl=15
-char id=23376 x=112 y=0 width=27 height=24 xoffset=0 yoffset=2 xadvance=27 page=0 chnl=15
-char id=23493 x=140 y=0 width=27 height=26 xoffset=0 yoffset=0 xadvance=27 page=0 chnl=15
-char id=24051 x=168 y=0 width=27 height=22 xoffset=0 yoffset=3 xadvance=27 page=0 chnl=15
-char id=25100 x=196 y=0 width=27 height=26 xoffset=0 yoffset=0 xadvance=27 page=0 chnl=15
-char id=26410 x=224 y=0 width=27 height=26 xoffset=0 yoffset=0 xadvance=27 page=0 chnl=15
-char id=30003 x=0 y=27 width=27 height=26 xoffset=0 yoffset=0 xadvance=27 page=0 chnl=15
-char id=36784 x=28 y=27 width=28 height=24 xoffset=0 yoffset=2 xadvance=27 page=0 chnl=15
-char id=37193 x=57 y=27 width=27 height=24 xoffset=0 yoffset=2 xadvance=27 page=0 chnl=15
+char id=19985 x=0 y=0 width=26 height=21 xoffset=0 yoffset=2 xadvance=26 page=0 chnl=15
+char id=20133 x=27 y=0 width=26 height=25 xoffset=0 yoffset=0 xadvance=26 page=0 chnl=15
+char id=21320 x=54 y=0 width=26 height=24 xoffset=0 yoffset=0 xadvance=26 page=0 chnl=15
+char id=21359 x=81 y=0 width=26 height=24 xoffset=0 yoffset=0 xadvance=26 page=0 chnl=15
+char id=23376 x=108 y=0 width=26 height=24 xoffset=0 yoffset=1 xadvance=26 page=0 chnl=15
+char id=23493 x=135 y=0 width=26 height=25 xoffset=0 yoffset=0 xadvance=26 page=0 chnl=15
+char id=24051 x=162 y=0 width=26 height=22 xoffset=0 yoffset=1 xadvance=26 page=0 chnl=15
+char id=25100 x=189 y=0 width=26 height=25 xoffset=0 yoffset=0 xadvance=26 page=0 chnl=15
+char id=26410 x=216 y=0 width=26 height=24 xoffset=0 yoffset=0 xadvance=26 page=0 chnl=15
+char id=30003 x=0 y=26 width=26 height=24 xoffset=0 yoffset=0 xadvance=26 page=0 chnl=15
+char id=36784 x=27 y=26 width=26 height=24 xoffset=0 yoffset=1 xadvance=26 page=0 chnl=15
+char id=37193 x=54 y=26 width=26 height=22 xoffset=0 yoffset=2 xadvance=26 page=0 chnl=15

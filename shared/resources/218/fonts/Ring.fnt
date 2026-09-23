@@ -4,13 +4,13 @@ page id=0 file="Ring.png"
 chars count=12
 char id=19985 x=0 y=0 width=15 height=13 xoffset=0 yoffset=1 xadvance=15 page=0 chnl=15
 char id=20133 x=16 y=0 width=15 height=15 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
-char id=21320 x=32 y=0 width=15 height=15 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
-char id=21359 x=48 y=0 width=15 height=15 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
+char id=21320 x=32 y=0 width=15 height=14 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
+char id=21359 x=48 y=0 width=15 height=14 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
 char id=23376 x=64 y=0 width=15 height=14 xoffset=0 yoffset=1 xadvance=15 page=0 chnl=15
 char id=23493 x=80 y=0 width=15 height=15 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
 char id=24051 x=96 y=0 width=15 height=13 xoffset=0 yoffset=1 xadvance=15 page=0 chnl=15
-char id=25100 x=112 y=0 width=15 height=15 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
-char id=26410 x=128 y=0 width=15 height=15 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
-char id=30003 x=144 y=0 width=15 height=15 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
-char id=36784 x=160 y=0 width=16 height=14 xoffset=0 yoffset=1 xadvance=15 page=0 chnl=15
-char id=37193 x=177 y=0 width=15 height=14 xoffset=0 yoffset=1 xadvance=15 page=0 chnl=15
+char id=25100 x=112 y=0 width=15 height=14 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
+char id=26410 x=128 y=0 width=15 height=14 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
+char id=30003 x=144 y=0 width=15 height=14 xoffset=0 yoffset=0 xadvance=15 page=0 chnl=15
+char id=36784 x=160 y=0 width=15 height=14 xoffset=0 yoffset=1 xadvance=15 page=0 chnl=15
+char id=37193 x=176 y=0 width=15 height=13 xoffset=0 yoffset=1 xadvance=15 page=0 chnl=15
