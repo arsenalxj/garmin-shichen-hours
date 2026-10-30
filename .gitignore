@@ -2,6 +2,7 @@
 .tools/
 build/
 .agents/
+.claude/skills/baoyu-design
 __pycache__/
 *.pyc
 *.prg
